@@ -38,6 +38,7 @@ requirejs.config({
 });
 
 requirejs([
+
   // jQuery requires
   'jquery',
   'jquery-plugins/jquery-cookie',
