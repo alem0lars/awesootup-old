@@ -3,6 +3,8 @@
 # This is an RVM Project .rvmrc file, used to automatically load the ruby
 # development environment upon cd'ing into the directory
 
+export RUBYOPT=""
+
 # First we specify our desired <ruby>[@<gemset>], the @gemset name is optional,
 # Only full ruby name is supported here, for short names use:
 #     echo "rvm use 1.9.3" > .rvmrc
@@ -34,5 +36,5 @@ else
 fi
 
 # Bundle while reducing excess noise.
-bundle | grep -v 'Using' | grep -v 'complete' | sed '/^$/d
+bundle | grep -v 'Using' | grep -v 'complete' | sed '/^$/d'
 
