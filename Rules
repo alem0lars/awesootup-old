@@ -57,7 +57,7 @@ route '/assets/scripts/*/' do
   item.identifier.chop + '.js'
 end
 
-compile '/markup/*/' do
+rule '/markup/*/' do
   item.identifier.chop + '.html'
 end
 
