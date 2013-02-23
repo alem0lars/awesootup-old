@@ -1,82 +1,58 @@
-<div class="row">
+<div class="contain-to-grid fixed">
+  <div class="row">
 
-  <div class="twelve columns">
+    <div class="twelve columns">
 
-    <nav class="top-bar">
+      <nav class="top-bar">
 
-      <!-- == Title Area =================================================== -->
+        <!-- == Title Area ================================================= -->
 
-      <ul>
-        <li class="name">
-          <h1>
-            <a href="/index.html">Awesootup</a>
-          </h1>
-        </li>
-        <li class="toggle-topbar"><a href="#"></a></li>
-      </ul>
-
-      <!-- == Navigation =================================================== -->
-
-      <section>
-
-        <!-- == Left Navigation ============================================ -->
-
-        <ul class="left">
-
-          <li class="divider"></li>
-
-          <!-- == Parts dropdown =========================================== -->
-
-          <li class="has-dropdown">
-            <a class="active" href="#">Parts</a>
-
-            <ul class="dropdown">
-
-              <% get_guide_parts.each do |part| %>
-                <li><label><%= part[:name] %></label></li>
-                <% part[:sections].each do |section| %>
-                  <li>
-                    <a href="<%= section[:href] %>"><%= section[:name] %></a>
-                  </li>
-                <% end %>
-              <% end %>
-
-              <li class="divider"></li>
-              <li><a href="<%= get_guide_index[:href] %>">See all &rarr;</a></li>
-
-            </ul>
+        <ul>
+          <li class="name">
+            <h1>
+              <a href="/index.html">Awesootup</a>
+            </h1>
           </li>
-
-          <li class="divider hide-for-small"></li>
-
+          <li class="toggle-topbar"><a href="#"></a></li>
         </ul>
 
-        <!-- == Right Navigation =========================================== -->
+        <!-- == Navigation ================================================= -->
 
-        <ul class="right">
-          <li class="divider show-for-medium-and-up"></li>
-          <li class="has-dropdown">
-            <a href="#">Item 2</a>
-            <ul class="dropdown">
-              <li><label>Section Name</label></li>
-              <li><a href="#" class="">Level 1</a></li>
-              <li><a href="#">Dropdown Option</a></li>
-              <li><a href="#">Dropdown Option</a></li>
-              <li class="divider"></li>
-              <li><label>Section Name</label></li>
-              <li><a href="#">Dropdown Option</a></li>
-              <li><a href="#">Dropdown Option</a></li>
-              <li><a href="#">Dropdown Option</a></li>
-              <li class="divider"></li>
-              <li><a href="#">See all &rarr;</a></li>
-            </ul>
-          </li>
-        </ul>
+        <section>
 
-      </section>
+          <!-- == Left Navigation ========================================== -->
 
-    </nav>
+          <ul class="left">
+
+            <!-- == Guide Index ============================================ -->
+            <li class="divider"></li>
+            <li>
+              <a class="general foundicon-page"
+                 href="/guide/guide-index.html"> Guide Index</a>
+            </li>
+            <li class="divider hide-for-small"></li>
+
+          </ul>
+
+          <!-- == Right Navigation ========================================= -->
+
+          <ul class="right">
+
+            <!-- == Guide Index ============================================ -->
+            <li class="divider"></li>
+            <li>
+              <a class="social foundicon-torso"
+                 href="/about.html"> About</a>
+            </li>
+            <li class="divider hide-for-small"></li>
+
+          </ul>
+
+        </section>
+
+      </nav>
+
+    </div>
 
   </div>
-
 </div>

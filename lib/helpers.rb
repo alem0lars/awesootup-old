@@ -11,9 +11,3 @@ include Nanoc::Helpers::Text
 
 
 # == Custom helpers ============================================================
-
-require 'helpers/guide_parts'
-include Nanoc::Helpers::Guide::Parts
-
-require 'helpers/guide_index'
-include Nanoc::Helpers::Guide::Index

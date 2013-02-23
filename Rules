@@ -8,6 +8,10 @@ Compass.add_project_configuration 'config.rb'
 
 # == Compilation rules ========================================================
 
+# Don't apply filters for the fonts
+compile '/assets/fonts/*/' do
+end
+
 # Don't apply filters for the images
 compile '/assets/images/*/' do
 end
@@ -35,6 +39,10 @@ end
 
 
 # == Routing rules ============================================================
+
+route '/assets/fonts/*/' do
+  item.identifier.chop + '.' + item[:extension]
+end
 
 route '/assets/images/*/' do
   item.identifier.chop + '.' + item[:extension]

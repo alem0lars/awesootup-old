@@ -1,0 +1,216 @@
+@import "fonts_mixins";
+
+$classPrefix: "foundicon-";
+
+
+/* == Font faces ============================================================ */
+
+@include face("AccessibilityFoundicons", "/assets/fonts/foundicons-accessibility/foundicons-accessibility");
+@include face("GeneralFoundicons", "/assets/fonts/foundicons-general/foundicons-general");
+@include face("GeneralEnclosedFoundicons", "/assets/fonts/foundicons-general-enclosed/foundicons-general-enclosed");
+@include face("SocialFoundicons", "/assets/fonts/foundicons-social/foundicons-social");
+
+
+/* == Global foundicons styles ============================================== */
+
+[class*="#{$classPrefix}"] {
+  display: inline;
+  width: auto;
+  height: auto;
+  line-height: inherit;
+  vertical-align: baseline;
+  background-image: none;
+  background-position: 0 0;
+  background-repeat: repeat;
+}
+
+[class*="#{$classPrefix}"]:before {
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+}
+
+
+/* == Classes specific for foundicons ======================================= */
+
+[class*="accessibility foundicon-"]:before {
+  font-family: "AccessibilityFoundicons";
+}
+
+[class*="general foundicon-"]:before {
+  font-family: "GeneralFoundicons";
+}
+
+[class*="general-enclosed foundicon-"]:before {
+  font-family: "GeneralEnclosedFoundicons";
+}
+
+[class*="social foundicon-"]:before {
+  font-family: "SocialFoundicons";
+}
+
+
+/* == Icons for accessibility foundicons ==================================== */
+
+@include i-class(wheelchair, "000", $classPrefix);
+@include i-class(speaker, "001", $classPrefix);
+@include i-class(fontsize, "002", $classPrefix);
+@include i-class(eject, "003", $classPrefix);
+@include i-class(view-mode, "004", $classPrefix);
+@include i-class(eyeball, "005", $classPrefix);
+@include i-class(asl, "006", $classPrefix);
+@include i-class(person, "007", $classPrefix);
+@include i-class(question, "008", $classPrefix);
+@include i-class(adult, "009", $classPrefix);
+@include i-class(child, "00a", $classPrefix);
+@include i-class(glasses, "00b", $classPrefix);
+@include i-class(cc, "00c", $classPrefix);
+@include i-class(blind, "00d", $classPrefix);
+@include i-class(braille, "00e", $classPrefix);
+@include i-class(iphone-home, "00f", $classPrefix);
+@include i-class(w3c, "010", $classPrefix);
+@include i-class(css, "011", $classPrefix);
+@include i-class(key, "012", $classPrefix);
+@include i-class(hearing-impaired, "013", $classPrefix);
+@include i-class(male, "014", $classPrefix);
+@include i-class(female, "015", $classPrefix);
+@include i-class(network, "016", $classPrefix);
+@include i-class(guidedog, "017", $classPrefix);
+@include i-class(universal-access, "018", $classPrefix);
+@include i-class(elevator, "019", $classPrefix);
+
+
+/* == Icons for general foundicons ========================================== */
+
+@include i-class(settings, "000", $classPrefix);
+@include i-class(heart, "001", $classPrefix);
+@include i-class(star, "002", $classPrefix);
+@include i-class(plus, "003", $classPrefix);
+@include i-class(minus, "004", $classPrefix);
+@include i-class(checkmark, "005", $classPrefix);
+@include i-class(remove, "006", $classPrefix);
+@include i-class(mail, "007", $classPrefix);
+@include i-class(calendar, "008", $classPrefix);
+@include i-class(page, "009", $classPrefix);
+@include i-class(tools, "00a", $classPrefix);
+@include i-class(globe, "00b", $classPrefix);
+@include i-class(home, "00c", $classPrefix);
+@include i-class(quote, "00d", $classPrefix);
+@include i-class(people, "00e", $classPrefix);
+@include i-class(monitor, "00f", $classPrefix);
+@include i-class(laptop, "010", $classPrefix);
+@include i-class(phone, "011", $classPrefix);
+@include i-class(cloud, "012", $classPrefix);
+@include i-class(error, "013", $classPrefix);
+@include i-class(right-arrow, "014", $classPrefix);
+@include i-class(left-arrow, "015", $classPrefix);
+@include i-class(up-arrow, "016", $classPrefix);
+@include i-class(down-arrow, "017", $classPrefix);
+@include i-class(trash, "018", $classPrefix);
+@include i-class(add-doc, "019", $classPrefix);
+@include i-class(edit, "01a", $classPrefix);
+@include i-class(lock, "01b", $classPrefix);
+@include i-class(unlock, "01c", $classPrefix);
+@include i-class(refresh, "01d", $classPrefix);
+@include i-class(paper-clip, "01e", $classPrefix);
+@include i-class(video, "01f", $classPrefix);
+@include i-class(photo, "020", $classPrefix);
+@include i-class(graph, "021", $classPrefix);
+@include i-class(idea, "022", $classPrefix);
+@include i-class(mic, "023", $classPrefix);
+@include i-class(cart, "024", $classPrefix);
+@include i-class(address-book, "025", $classPrefix);
+@include i-class(compass, "026", $classPrefix);
+@include i-class(flag, "027", $classPrefix);
+@include i-class(location, "028", $classPrefix);
+@include i-class(clock, "029", $classPrefix);
+@include i-class(folder, "02a", $classPrefix);
+@include i-class(inbox, "02b", $classPrefix);
+@include i-class(website, "02c", $classPrefix);
+@include i-class(smiley, "02d", $classPrefix);
+@include i-class(search, "02e", $classPrefix);
+
+
+/* == Icons for general enclosed foundicons ================================= */
+
+@include i-class(settings, "000", $classPrefix);
+@include i-class(heart, "001", $classPrefix);
+@include i-class(star, "002", $classPrefix);
+@include i-class(plus, "003", $classPrefix);
+@include i-class(minus, "004", $classPrefix);
+@include i-class(checkmark, "005", $classPrefix);
+@include i-class(remove, "006", $classPrefix);
+@include i-class(mail, "007", $classPrefix);
+@include i-class(calendar, "008", $classPrefix);
+@include i-class(page, "009", $classPrefix);
+@include i-class(tools, "00a", $classPrefix);
+@include i-class(globe, "00b", $classPrefix);
+@include i-class(home, "00c", $classPrefix);
+@include i-class(quote, "00d", $classPrefix);
+@include i-class(people, "00e", $classPrefix);
+@include i-class(monitor, "00f", $classPrefix);
+@include i-class(laptop, "010", $classPrefix);
+@include i-class(phone, "011", $classPrefix);
+@include i-class(cloud, "012", $classPrefix);
+@include i-class(error, "013", $classPrefix);
+@include i-class(right-arrow, "014", $classPrefix);
+@include i-class(left-arrow, "015", $classPrefix);
+@include i-class(up-arrow, "016", $classPrefix);
+@include i-class(down-arrow, "017", $classPrefix);
+@include i-class(trash, "018", $classPrefix);
+@include i-class(add-doc, "019", $classPrefix);
+@include i-class(edit, "01a", $classPrefix);
+@include i-class(lock, "01b", $classPrefix);
+@include i-class(unlock, "01c", $classPrefix);
+@include i-class(refresh, "01d", $classPrefix);
+@include i-class(paper-clip, "01e", $classPrefix);
+@include i-class(video, "01f", $classPrefix);
+@include i-class(photo, "020", $classPrefix);
+@include i-class(graph, "021", $classPrefix);
+@include i-class(idea, "022", $classPrefix);
+@include i-class(mic, "023", $classPrefix);
+@include i-class(cart, "024", $classPrefix);
+@include i-class(address-book, "025", $classPrefix);
+@include i-class(compass, "026", $classPrefix);
+@include i-class(flag, "027", $classPrefix);
+@include i-class(location, "028", $classPrefix);
+@include i-class(clock, "029", $classPrefix);
+@include i-class(folder, "02a", $classPrefix);
+@include i-class(inbox, "02b", $classPrefix);
+@include i-class(website, "02c", $classPrefix);
+@include i-class(smiley, "02d", $classPrefix);
+@include i-class(search, "02e", $classPrefix);
+
+
+/* == Icons for social foundicons =========================================== */
+
+@include i-class(thumb-up, "000", $classPrefix);
+@include i-class(thumb-down, "001", $classPrefix);
+@include i-class(rss, "002", $classPrefix);
+@include i-class(facebook, "003", $classPrefix);
+@include i-class(twitter, "004", $classPrefix);
+@include i-class(pinterest, "005", $classPrefix);
+@include i-class(github, "006", $classPrefix);
+@include i-class(path, "007", $classPrefix);
+@include i-class(linkedin, "008", $classPrefix);
+@include i-class(dribbble, "009", $classPrefix);
+@include i-class(stumble-upon, "00a", $classPrefix);
+@include i-class(behance, "00b", $classPrefix);
+@include i-class(reddit, "00c", $classPrefix);
+@include i-class(google-plus, "00d", $classPrefix);
+@include i-class(youtube, "00e", $classPrefix);
+@include i-class(vimeo, "00f", $classPrefix);
+@include i-class(flickr, "010", $classPrefix);
+@include i-class(slideshare, "011", $classPrefix);
+@include i-class(picassa, "012", $classPrefix);
+@include i-class(skype, "013", $classPrefix);
+@include i-class(steam, "014", $classPrefix);
+@include i-class(instagram, "015", $classPrefix);
+@include i-class(foursquare, "016", $classPrefix);
+@include i-class(delicious, "017", $classPrefix);
+@include i-class(chat, "018", $classPrefix);
+@include i-class(torso, "019", $classPrefix);
+@include i-class(tumblr, "01a", $classPrefix);
+@include i-class(video-chat, "01b", $classPrefix);
+@include i-class(digg, "01c", $classPrefix);
+@include i-class(wordpress, "01d", $classPrefix);
