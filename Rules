@@ -32,11 +32,14 @@ compile '/assets/scripts/*/' do
 end
 
 # Markups are filtered with ERB and use the 'default.html' layout
-compile '*' do
+compile '/markup/*/' do
   filter :erb
   layout 'default'
 end
 
+compile '*' do
+  nil
+end
 
 # == Routing rules ============================================================
 
@@ -58,11 +61,16 @@ route '/assets/styles/*/' do
 end
 
 route '/assets/scripts/*/' do
+  puts item.identifier.chop + '.js'
   item.identifier.chop + '.js'
 end
 
+route '/markup/*/' do
+  item.identifier.chop + '.html'
+end
+
 route '*' do
-  item.identifier + 'index.html'
+  rep.item.identifier + "index.html"
 end
 
 
