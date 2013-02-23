@@ -1,14 +1,50 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    adsf (1.1.1)
+      rack (>= 1.0.0)
+    chunky_png (1.2.7)
     colored (1.2)
+    compass (0.12.2)
+      chunky_png (~> 1.2)
+      fssm (>= 0.2.7)
+      sass (~> 3.1)
     cri (2.3.0)
       colored (>= 1.2)
+    ffi (1.4.0)
+    fssm (0.2.10)
+    json (1.7.7)
+    listen (0.7.2)
+    modular-scale (1.0.6)
+      compass (>= 0.12.1)
+      sass (>= 3.2.0)
+      sassy-math (>= 1.5)
     nanoc (3.5.0)
       cri (~> 2.2)
+    nokogiri (1.5.6)
+    rack (1.5.2)
+    rake (10.0.3)
+    rb-inotify (0.8.8)
+      ffi (>= 0.5.0)
+    sass (3.2.6)
+    sassy-math (1.5)
+      compass (~> 0.11)
+    w3c_validators (1.2)
+      json
+      nokogiri
+    zurb-foundation (3.2.5)
+      compass (>= 0.12.2)
+      modular-scale (= 1.0.6)
+      rake
+      sass (>= 3.2.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  adsf
+  listen
   nanoc
+  rb-inotify (~> 0.8.8)
+  w3c_validators
+  zurb-foundation

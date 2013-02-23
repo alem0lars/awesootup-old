@@ -1,43 +1,72 @@
 #!/usr/bin/env ruby
 
-# A few helpful tips about the Rules file:
-#
-# * The string given to #compile and #route are matching patterns for
-#   identifiers--not for paths. Therefore, you can’t match on extension.
-#
-# * The order of rules is important: for each item, only the first matching
-#   rule is applied.
-#
-# * Item identifiers start and end with a slash (e.g. “/about/” for the file
-#   “content/about.html”). To select all children, grandchildren, … of an
-#   item, use the pattern “/about/*/”; “/about/*” will also select the parent,
-#   because “*” matches zero or more characters.
+require 'compass'
 
-compile '/stylesheet/' do
-  # don’t filter or layout
+
+Compass.add_project_configuration 'config.rb'
+
+
+# == Compilation rules ========================================================
+
+# Don't apply filters for the images
+compile '/assets/images/*/' do
 end
 
+# Don't apply filters for the SCSS partials, because we will not route them
+compile '/assets/styles/_*/' do
+end
+
+# For each stylesheet filter it as a SCSS item
+compile '/assets/styles/*/' do
+  filter :sass, Compass.sass_engine_options
+end
+
+# The scripts are filtered with ERB because we could want to use some kind of
+# pre-processing
+compile '/assets/scripts/*/' do
+  filter :erb
+end
+
+# Markups are filtered with ERB and use the 'default.html' layout
+compile '/markup/*/' do
+  filter :erb
+  layout 'default'
+end
+
+# Default rule for compile: don't do anything
 compile '*' do
-  if item.binary?
-    # don’t filter binary items
-  else
-    filter :erb
-    layout 'default'
-  end
 end
 
-route '/stylesheet/' do
-  '/style.css'
+
+# == Routing rules ============================================================
+
+route '/assets/images/*/' do
+  item.identifier.chop + '.' + item[:extension]
+end
+
+# Don't output SCSS partials, so return nil
+route '/assets/styles/_*/' do
+  nil
+end
+
+route '/assets/styles/*/' do
+  item.identifier.chop + '.css'
+end
+
+route '/assets/scripts/*/' do
+  item.identifier.chop + '.js'
+end
+
+compile '/markup/*/' do
+  item.identifier.chop + '.html'
 end
 
 route '*' do
-  if item.binary?
-    # Write item with identifier /foo/ to /foo.ext
-    item.identifier.chop + '.' + item[:extension]
-  else
-    # Write item with identifier /foo/ to /foo/index.html
-    item.identifier + 'index.html'
-  end
+  item.identifier.chop + '.html'
 end
 
+
+# == Layout rules =============================================================
+
+# Compile the layouts using ERB
 layout '*', :erb
