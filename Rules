@@ -16,7 +16,8 @@ end
 compile '/assets/images/*/' do
 end
 
-# Don't apply filters for the SCSS partials, because we will not route them
+# Don't apply filters for the styles partials (files that begin with '_'),
+# because we will not route them
 compile '/assets/styles/_*/' do
 end
 
@@ -37,40 +38,59 @@ compile '/markup/*/' do
   layout 'default'
 end
 
+# The index page is filtered with ERB and use the 'default.html' layout
+compile '/markup/' do
+  filter :erb
+  layout 'default'
+end
+
 compile '*' do
   nil
 end
 
 # == Routing rules ============================================================
 
+# Route for '/assets/fonts':
+# Preserve the filename, the file extensions and the directory structure
 route '/assets/fonts/*/' do
   item.identifier.chop + '.' + item[:extension]
 end
 
+# Route for '/assets/images':
+# Preserve the filename, the file extensions and the directory structure
 route '/assets/images/*/' do
   item.identifier.chop + '.' + item[:extension]
 end
 
-# Don't output SCSS partials, so return nil
+# Route for '/assets/styles' styles partials:
+# Don't output styles partials, so return nil
 route '/assets/styles/_*/' do
   nil
 end
 
+# Route for '/assets/styles' (non styles partials):
+# Append .css to the filename and preserve the directory structure
 route '/assets/styles/*/' do
   item.identifier.chop + '.css'
 end
 
+# Route for '/assets/scripts':
+# Append .js to the filename and preserve the directory structure
 route '/assets/scripts/*/' do
-  puts item.identifier.chop + '.js'
   item.identifier.chop + '.js'
 end
 
+# Route for all files in '/markup' (except index.html)
+# Append .html to the filename, make the directory hierarchy under '/markup' in
+# the output root directory
 route '/markup/*/' do
-  item.identifier.chop + '.html'
+  item.identifier.chop.gsub(/^\/markup/, '/') + '.html'
 end
 
-route '*' do
-  rep.item.identifier + "index.html"
+# Route for '/markup/index.html':
+# Put 'index.html' in the root directory
+route '/markup/' do
+  '/index.html'
 end
 
 
