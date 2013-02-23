@@ -1,6 +1,6 @@
 requirejs.config({
   // By default load any module IDs from js/lib
-  baseUrl: 'scripts/lib',
+  baseUrl: 'assets/scripts/lib',
   // except, if the module ID starts with "app", load it from the "js/app" dir.
   // "paths" config is relative to the baseUrl, and never includes a ".js"
   // extension since the paths config could be for a directory.
@@ -9,43 +9,61 @@ requirejs.config({
   },
 
   shim: {
-    'jquery': {
-      deps: [],
-      exports: 'jquery',
-      init: function (jquery) { /* No function init at the moment */
-      }
-    }
+
+    'jquery': { deps: [], exports: '$' },
+    'jquery-plugins/jquery-cookie'            : ['jquery'],
+    'jquery-plugins/jquery-event-move'        : ['jquery'],
+    'jquery-plugins/jquery-event-swipe'       : ['jquery'],
+    'jquery-plugins/jquery-offcanvas'         : ['jquery'],
+    'jquery-plugins/jquery-placeholder'       : ['jquery'],
+
+    'foundation/foundation-modernizr'         : ['jquery'],
+    'foundation/foundation-accordion'         : ['jquery'],
+    'foundation/foundation-alerts'            : ['jquery'],
+    'foundation/foundation-buttons'           : ['jquery'],
+    'foundation/foundation-clearing'          : ['jquery'],
+    'foundation/foundation-forms'             : ['jquery'],
+    'foundation/foundation-joyride'           : ['jquery'],
+    'foundation/foundation-magellan'          : ['jquery'],
+    'foundation/foundation-mediaQueryToggle'  : ['jquery'],
+    'foundation/foundation-navigation'        : ['jquery'],
+    'foundation/foundation-orbit'             : ['jquery'],
+    'foundation/foundation-reveal'            : ['jquery'],
+    'foundation/foundation-tabs'              : ['jquery'],
+    'foundation/foundation-tooltips'          : ['jquery'],
+    'foundation/foundation-topbar'            : ['jquery'],
+    'foundation/foundation'                   : ['jquery']
+
   }
 });
 
 requirejs([
   // jQuery requires
   'jquery',
-  'jquery_plugins/jquery_cookie',
-  'jquery_plugins/jquery_event_move',
-  'jquery_plugins/jquery_event_swipe',
-  'jquery_plugins/jquery_offcanvas',
-  'jquery_plugins/jquery_placeholder',
+  'jquery-plugins/jquery-cookie',
+  'jquery-plugins/jquery-event-move',
+  'jquery-plugins/jquery-event-swipe',
+  'jquery-plugins/jquery-offcanvas',
+  'jquery-plugins/jquery-placeholder',
 
   // Zurb-Foundation requires
-  'foundation/foundation_modernizr',
-  'foundation/foundation_accordion',
-  'foundation/foundation_alerts',
-  'foundation/foundation_buttons',
-  'foundation/foundation_clearing',
-  'foundation/foundation_forms',
-  'foundation/foundation_joyride',
-  'foundation/foundation_magellan',
-  'foundation/foundation_mediaQueryToggle',
-  'foundation/foundation_navigation',
-  'foundation/foundation_orbit',
-  'foundation/foundation_reveal',
-  'foundation/foundation_tabs',
-  'foundation/foundation_tooltips',
-  'foundation/foundation_topbar',
+  'foundation/foundation-modernizr',
+  'foundation/foundation-accordion',
+  'foundation/foundation-alerts',
+  'foundation/foundation-buttons',
+  'foundation/foundation-clearing',
+  'foundation/foundation-forms',
+  'foundation/foundation-joyride',
+  'foundation/foundation-magellan',
+  'foundation/foundation-mediaQueryToggle',
+  'foundation/foundation-navigation',
+  'foundation/foundation-orbit',
+  'foundation/foundation-reveal',
+  'foundation/foundation-tabs',
+  'foundation/foundation-tooltips',
+  'foundation/foundation-topbar',
   'foundation/foundation',
 
   // App requires (e.g. app/my_js_file)
 
 ]);
-
