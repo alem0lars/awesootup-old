@@ -3,6 +3,8 @@
 
 /crash.log
 
+/.sass-cache
+
 /*.iml
 /.idea
 
