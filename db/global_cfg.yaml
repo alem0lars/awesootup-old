@@ -12,8 +12,26 @@ author:
 
 contributors: []
 
+internal_links:
+  guide:
+    title: 'Guide Index'
+    url: '/guide.html'
+  index:
+    title: 'Awesootup'
+    url: '/index.html'
+  about:
+    title: 'About'
+    url: 'javascript:void(0)'
+
+project_links:
+  fork: 'https://github.com/alem0lars/awesootup/fork_select'
+  pull: 'https://github.com/alem0lars/awesootup/pull/new/master'
+  new_issue: 'https://github.com/alem0lars/awesootup/issues/new'
+
 useful_links:
-  - title: 'Awesootup source code'
-    url: 'http://github.com/alem0lars/awesootup'
   - title: 'Author homepage'
     url: 'http://molarialessandro.info'
+  - title: 'Awesootup source code'
+    url: 'https://github.com/alem0lars/awesootup'
+  - title: 'Awesootup issues'
+    url: 'https://github.com/alem0lars/awesootup/issues'

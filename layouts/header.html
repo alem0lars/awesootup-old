@@ -10,7 +10,7 @@
         <ul>
           <li class="name">
             <h1>
-              <a href="/index.html">Awesootup</a>
+              <%= internal_link(:index) %>
             </h1>
           </li>
           <li class="toggle-topbar"><a href="#"></a></li>
@@ -27,8 +27,8 @@
             <!-- == Guide Index ============================================ -->
             <li class="divider"></li>
             <li>
-              <a class="general foundicon-page"
-                 href="/guide/index.html"> Guide Index</a>
+              <%= internal_link(:guide, :prepend => ' ',
+                    :class => 'general foundicon-page') %>
             </li>
             <li class="divider hide-for-small"></li>
 
@@ -41,8 +41,8 @@
             <!-- == Guide Index ============================================ -->
             <li class="divider"></li>
             <li>
-              <a class="social foundicon-torso go-to-bottom"
-                 href="javascript:void(0)"> About</a>
+              <%= internal_link(:about, :prepend => ' ',
+                    :class => 'social foundicon-torso go-to-bottom') %>
             </li>
             <li class="divider hide-for-small"></li>
 

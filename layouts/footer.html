@@ -1,4 +1,4 @@
-<div id="footer" class="twelve columns">
+<div id="footer" class="twelve columns" xmlns="http://www.w3.org/1999/html">
 
   <hr/>
 
@@ -16,25 +16,110 @@
 
       <div id="about-guide-content-wrp" class="content">
         <div id="about-guide-content">
-          <div class="row">
+          <div class="full-row">
+
+            <!-- == About the guide - Info ================================= -->
 
             <div id="about-guide-info" class="five columns">
-              <p id="copyright-notice">
-                Copyright &copy <%= Time.now.strftime('%Y') %>
-                <%= $global_cfg.get(:author, :name) %>.
-                <span class="label">All rights reserved</span>
-              </p>
-              <p id="license">
-                All of the content is released under the
-                <a href="<%= $global_cfg.get(:license, :website) %>">
-                  <span class="label"><%= $global_cfg.get(:license, :name) %></span>
-                  license
-                </a>
-              </p>
+              <div class="panel rounded">
+
+                <p id="copyright-notice">
+                  Copyright &copy <%= Time.now.strftime('%Y') %>
+                  <%= $global_cfg.get(:author, :name) %>.
+                  <span class="label">All rights reserved</span>
+                </p>
+
+                <p id="license">
+                  All of the content is released under the
+                  <a href="<%= $global_cfg.get(:license, :website) %>">
+                  <span class="label">
+                    <%= $global_cfg.get(:license, :name) %></span>
+                    license
+                  </a>
+                </p>
+
+              </div>
             </div>
 
+            <!-- == About the guide - Contribute =========================== -->
+
             <div id="about-guide-contribute" class="seven columns">
-              asdniodsanoidsanodisaon
+              <div class="panel rounded">
+
+                <h6>Contribute for the website</h6>
+                <ul>
+                  <li>
+                    <a class="social foundicon-github"
+                       href="<%= $global_cfg.get(:project_links, :fork) %>">
+                      Fork
+                    </a>
+                    the project
+                  </li>
+                  <li>
+                    Modify the website
+                  </li>
+                  <li>
+                    Make a
+                    <a class="social foundicon-github"
+                       href="<%= $global_cfg.get(:project_links, :pull) %>">
+                      Pull
+                    </a>
+                    request
+                  </li>
+                </ul>
+
+                <hr/>
+
+                <h6>Contribute for the guide</h6>
+                <ul>
+                  <li>
+                    <strong>Create a new module</strong>
+                    <ul>
+                      <li>Create a new module</li>
+                      <li>Create a yaml fragment for its metadata</li>
+                      <li>
+                        Create a
+                        <a class="social foundicon-github"
+                           href="<%= $global_cfg.get(
+                                       :project_links, :new_issue) %>">
+                          New Issue
+                        </a>
+                        and include the created module and its metadata as
+                        attachments
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>Contribute to existing modules</strong>
+                    <p>
+                      Create a
+                      <a class="social foundicon-github"
+                         href="<%= $global_cfg.get(
+                                     :project_links, :new_issue) %>">
+                        New Issue
+                      </a>
+                      for an existing module to <em>fix</em> or
+                      <em>improve</em> it
+                    </p>
+                  </li>
+                </ul>
+
+                <hr/>
+
+                <h6>Make a donation</h6>
+
+                <p>
+                  Feel free to make any donation you want by clicking the button
+                  below:
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+                    <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal — The safer, easier way to pay online.">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1">
+                  </form>
+                </p>
+
+              </div>
             </div>
 
           </div>
@@ -43,10 +128,13 @@
 
     </li>
 
+    <!-- == About the contributors ========================================= -->
+
     <li id="about-contributors">
 
       <div id="about-contributors-title-wrp" class="title go-to-bottom">
-        <h5 id="about-contributors-title" class="general foundicon-heart go-to-bottom">
+        <h5 id="about-contributors-title"
+            class="general foundicon-heart go-to-bottom">
           About Author /
           <span class="has-tip tip-top" data-width="210"
                 title="Many thanks to all contributors!">
@@ -69,6 +157,8 @@
 
           <tbody id="about-contributors-content-body">
 
+            <!-- == Author contributions =================================== -->
+
             <tr>
               <td>
                 <h6>
@@ -86,6 +176,8 @@
                 <span class="success label">Guide and Website author</span>
               </td>
             </tr>
+
+            <!-- == Contributors contributions ============================= -->
 
             <% $global_cfg.get(:contributors).each do |contributor| %>
               <tr>
@@ -127,10 +219,13 @@
 
     </li>
 
+    <!-- == About useful links ============================================= -->
+
     <li id="about-usefullinks">
 
       <div id="about-usefullinks-title-wrp" class="title go-to-bottom">
-        <h5 id="about-usefullinks-title" class="general foundicon-cloud go-to-bottom">
+        <h5 id="about-usefullinks-title"
+            class="general foundicon-cloud go-to-bottom">
           Some useful links
         </h5>
       </div>
