@@ -1,0 +1,19 @@
+title: 'Awesome Gentoo Setup'
+acronym: 'Awesootup'
+
+license:
+  website: 'http://www.gnu.org/licenses/gpl-3.0.html'
+  name: 'GPLv3'
+
+author:
+  name: 'Alessandro Molari'
+  email: 'molari.alessandro@gmail.com'
+  website: 'http://molarialessandro.info'
+
+contributors: []
+
+useful_links:
+  - title: 'Awesootup source code'
+    url: 'http://github.com/alem0lars/awesootup'
+  - title: 'Author homepage'
+    url: 'http://molarialessandro.info'

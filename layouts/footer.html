@@ -1,0 +1,152 @@
+<div id="footer" class="twelve columns">
+
+  <hr/>
+
+  <ul id="about" class="accordion">
+
+    <!-- == About the guide ================================================ -->
+
+    <li id="about-guide" class="active">
+
+      <div id="about-guide-title-wrp" class="title go-to-bottom">
+        <h5 id="about-guide-title" class="general foundicon-website go-to-bottom">
+          About the guide
+        </h5>
+      </div>
+
+      <div id="about-guide-content-wrp" class="content">
+        <div id="about-guide-content">
+          <div class="row">
+
+            <div id="about-guide-info" class="five columns">
+              <p id="copyright-notice">
+                Copyright &copy <%= Time.now.strftime('%Y') %>
+                <%= $global_cfg.get(:author, :name) %>.
+                <span class="label">All rights reserved</span>
+              </p>
+              <p id="license">
+                All of the content is released under the
+                <a href="<%= $global_cfg.get(:license, :website) %>">
+                  <span class="label"><%= $global_cfg.get(:license, :name) %></span>
+                  license
+                </a>
+              </p>
+            </div>
+
+            <div id="about-guide-contribute" class="seven columns">
+              asdniodsanoidsanodisaon
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </li>
+
+    <li id="about-contributors">
+
+      <div id="about-contributors-title-wrp" class="title go-to-bottom">
+        <h5 id="about-contributors-title" class="general foundicon-heart go-to-bottom">
+          About Author /
+          <span class="has-tip tip-top" data-width="210"
+                title="Many thanks to all contributors!">
+            Contributors
+          </span>
+        </h5>
+      </div>
+
+      <div id="about-contributors-content-wrp" class="content">
+
+        <table id="about-contributors-content" class="twelve">
+
+          <thead id="about-contributors-content-header">
+            <tr>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Contributions</th>
+            </tr>
+          </thead>
+
+          <tbody id="about-contributors-content-body">
+
+            <tr>
+              <td>
+                <h6>
+                  <a href="<%= $global_cfg.get(:author, :website) %>">
+                    <%= $global_cfg.get(:author, :name) %>
+                  </a>
+                </h6>
+              </td>
+              <td>
+                <a href="mailto:<%= $global_cfg.get(:author, :email) %>">
+                  <%= $global_cfg.get(:author, :email) %>
+                </a>
+              </td>
+              <td>
+                <span class="success label">Guide and Website author</span>
+              </td>
+            </tr>
+
+            <% $global_cfg.get(:contributors).each do |contributor| %>
+              <tr>
+                <td>
+                  <% if contributor.has_key?(:website) %>
+                    <h6>
+                      <a href="<%= contributor[:website] %>">
+                        <%= contributor[:name] %>
+                      </a>
+                    </h6>
+                  <% else %>
+                    <h6><%= contributor[:name] %></h6>
+                  <% end %>
+                </td>
+                <td>
+                  <% if contributor.has_key?(:email) %>
+                    <a href="mailto:<%= contributor[:email] %>">
+                      <%= contributor[:email] %>
+                    </a>
+                  <% else %>
+                    ---
+                  <% end %>
+                </td>
+                <td>
+                  <% if contributor.has_key?(:contribution) %>
+                    <span><%= contributor[:contribution] %></span>
+                  <% else %>
+                    ---
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </li>
+
+    <li id="about-usefullinks">
+
+      <div id="about-usefullinks-title-wrp" class="title go-to-bottom">
+        <h5 id="about-usefullinks-title" class="general foundicon-cloud go-to-bottom">
+          Some useful links
+        </h5>
+      </div>
+
+      <div id="about-usefullinks-content-wrp" class="content">
+        <ul id="about-usefullinks-content">
+          <% $global_cfg.get(:useful_links).each do |useful_link| %>
+            <li>
+              <a href="<%= useful_link[:url] %>"><%= useful_link[:title] %></a>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+    </li>
+
+  </ul>
+
+</div>

@@ -1,8 +1,16 @@
 // Fonts
 @import "app/config/fonts/_fonts_config";
 
+// Colors
+@import "app/config/colors";
+
 // Override Zurb-Foundation defaults
 @import "app/config/foundation_config";
 
 // Import Zurb-Foundation
 @import "foundation";
+
+// Import layout styles
+@import "app/main";
+@import "app/header";
+@import "app/footer";

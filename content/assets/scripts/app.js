@@ -65,6 +65,7 @@ requirejs([
   'foundation/foundation-topbar',
   'foundation/foundation',
 
-  // App requires (e.g. app/my_js_file)
+  // App requires
+  'app/moving'
 
 ]);
