@@ -17,7 +17,7 @@ requirejs.config({
     'jquery-plugins/jquery-offcanvas'         : ['jquery'],
     'jquery-plugins/jquery-placeholder'       : ['jquery'],
 
-    'underscore': { deps: ['jquery'], exports: '_' },
+    'sugar'                                   : [],
 
     'foundation/foundation-modernizr'         : ['jquery'],
     'foundation/foundation-accordion'         : ['jquery'],
@@ -50,7 +50,7 @@ requirejs([
   'jquery-plugins/jquery-placeholder',
 
   // Other libs requires
-  'underscore',
+  'sugar',
 
   // Zurb-Foundation requires
   'foundation/foundation-modernizr',
@@ -72,7 +72,9 @@ requirejs([
 
   // App requires
   'app/moving',
-  'app/module',
-  'app/awesootup'
+  'app/awesootup-module',
+  'app/awesootup',
+  'app/modules-manager',
+  'app/awesootups-manager'
 
 ]);

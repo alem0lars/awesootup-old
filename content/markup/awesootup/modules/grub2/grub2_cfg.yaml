@@ -1,12 +1,15 @@
-name: 'Standalone Awesootup'
-
-desc: 'The classic gentoo setup'
-
 author:
   name: 'Alessandro Molari'
   email: 'molari.alessandro@gmail.com'
   website: 'http://molarialessandro.info'
 
-modules:
+name: 'grub2'
+
+desc: 'Grub 2 install & configuration'
+
+provides: 'bootloader'
+
+pre_reqs:
   - 'bootstrap'
-  - 'grub2'
+
+post_reqs: []
