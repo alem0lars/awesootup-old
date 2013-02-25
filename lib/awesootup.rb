@@ -23,7 +23,8 @@ module Awesootup
           :name => mod_cfg.get(:name).to_s,
           :desc => mod_cfg.get(:desc).to_s,
           :modules => modules,
-          :author => mod_cfg.get(:author)
+          :author => mod_cfg.get(:author),
+          :is_standalone => /^standalone.yaml$/.match(File.basename(awesootup))
       }
 
     end

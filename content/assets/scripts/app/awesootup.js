@@ -3,7 +3,12 @@ define(['jquery', 'sugar'], function($, sugar) {
   /* == Awesootup definition ================================================ */
 
   /* Constructor */
-  function Awesootup(modules, author) {
+  function Awesootup(name, desc, modules, author) {
+
+    this.name = name;
+
+    this.desc = desc;
+
     this.modules = modules;
 
     if (this.modules.length == 0) {
@@ -25,6 +30,21 @@ define(['jquery', 'sugar'], function($, sugar) {
       if (!(Object.has(author, 'name'))) { this.author['name'] = null; }
     }
   }
+
+  /* Method: Return the awesootup name */
+  Awesootup.prototype.get_name = function() {
+    return this.name;
+  };
+
+  /* Method: Return the awesootup description */
+  Awesootup.prototype.get_desc = function() {
+    return this.desc;
+  };
+
+  /* Method: Return the awesootup author */
+  Awesootup.prototype.get_author = function() {
+    return this.author;
+  };
 
   /* Method: Return the current module */
   Awesootup.prototype.get_cur_module = function() {
@@ -82,16 +102,13 @@ define(['jquery', 'sugar'], function($, sugar) {
     }
   };
 
-  /* Method: Return the awesootup author */
-  Awesootup.prototype.get_author = function() {
-    return this.author;
-  };
-
 
   /* == Module export ======================================================= */
 
   return {
-    'Awesootup': Awesootup
+    create_awesootup: function(name, desc, modules, author) {
+      return new Awesootup(name, desc, modules, author);
+    }
   };
 
 });
