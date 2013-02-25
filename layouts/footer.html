@@ -4,23 +4,24 @@
 
   <ul id="about" class="accordion">
 
-    <!-- == About the guide ================================================ -->
+    <!-- == About the project ============================================== -->
 
-    <li id="about-guide" class="active">
+    <li id="about-project" class="active">
 
-      <div id="about-guide-title-wrp" class="title go-to-bottom">
-        <h5 id="about-guide-title" class="general foundicon-website go-to-bottom">
-          About the guide
+      <div id="about-project-title-wrp" class="title go-to-bottom">
+        <h5 id="about-project-title"
+            class="general foundicon-website go-to-bottom">
+          About the project
         </h5>
       </div>
 
-      <div id="about-guide-content-wrp" class="content">
-        <div id="about-guide-content">
+      <div id="about-project-content-wrp" class="content">
+        <div id="about-project-content">
           <div class="full-row">
 
-            <!-- == About the guide - Info ================================= -->
+            <!-- == About the project - Info =============================== -->
 
-            <div id="about-guide-info" class="five columns">
+            <div id="about-project-info" class="five columns">
               <div class="panel rounded">
 
                 <p id="copyright-notice">
@@ -41,10 +42,12 @@
               </div>
             </div>
 
-            <!-- == About the guide - Contribute =========================== -->
+            <!-- == About the project - Contribute ========================= -->
 
-            <div id="about-guide-contribute" class="seven columns">
+            <div id="about-project-contribute" class="seven columns">
               <div class="panel rounded">
+
+                <!-- == Contribute for website ============================= -->
 
                 <h6>Contribute for the website</h6>
                 <ul>
@@ -70,7 +73,42 @@
 
                 <hr/>
 
-                <h6>Contribute for the guide</h6>
+                <!-- == Contribute for awesootups ========================== -->
+
+                <h6>Contribute for awesootups</h6>
+
+                <ul>
+                  <li>
+                    <strong>Create a new awesootup</strong>
+                    <ul>
+                      <li>Choose the existing modules you want</li>
+                      <li>
+                        Create the yaml file that describes the awesootup
+                        that you want to create
+                      </li>
+                      <li>
+                        Create a
+                        <a class="social foundicon-github"
+                           href="<%= $global_cfg.get(
+                                       :project_links, :new_issue) %>">
+                          New Issue
+                        </a>
+                        attaching the awesootup description (the yaml file)
+                      </li>
+                      <li>
+                        If it is approved, you will see your awesootup in the
+                        website and you in the contributors list
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+
+                <hr/>
+
+                <!-- == Contribute for modules ============================= -->
+
+                <h6>Contribute for modules</h6>
+
                 <ul>
                   <li>
                     <strong>Create a new module</strong>
@@ -88,6 +126,7 @@
                         attachments
                       </li>
                     </ul>
+                    <hr/>
                   </li>
                   <li>
                     <strong>Contribute to existing modules</strong>
@@ -105,6 +144,8 @@
                 </ul>
 
                 <hr/>
+
+                <!-- == Make a donation ==================================== -->
 
                 <h6>Make a donation</h6>
 

@@ -116,6 +116,8 @@
     <div id="awesootupbuilder" class="twelve columns">
       <div class="panel rounded">
 
+        <h4 id="awesootupbuilder-title">Awesootup Builder</h4>
+
         <!-- == AwesootupBuilder titles ==================================== -->
 
         <dl id="awesootupbuilder-titles" class="tabs">
@@ -127,7 +129,7 @@
             </a>
           </dd>
 
-          <dd id="awesootupbuilder-popular-title-wrp" class="active">
+          <dd id="awesootupbuilder-popular-title-wrp">
             <a id="awesootupbuilder-popular-title"
                href="#awesootupbuilder-popular">
               <i class="general foundicon-star">&nbsp;&nbsp;Popular</i>
@@ -148,11 +150,12 @@
         <ul id="awesootupbuilder-tabs" class="tabs-content">
 
           <li id="awesootupbuilder-standaloneTab" class="active">
-            The standalone awesootup is the classic one, containing all of the
-            basic modules, featuring a complete setup.
+            <h5>
+              The standalone awesootup is the classic one, containing all of the
+              basic modules, featuring a complete setup.
+            </h5>
             <hr/>
             These are the selected modules:
-            <%= get_modules(get_awesootup(:standalone)) %>
           </li>
 
           <li id="awesootupbuilder-popularTab" class="active">

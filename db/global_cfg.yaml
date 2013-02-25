@@ -13,9 +13,6 @@ author:
 contributors: []
 
 internal_links:
-  guide:
-    title: 'Guide Index'
-    url: '/guide.html'
   index:
     title: 'Awesootup'
     url: '/index.html'

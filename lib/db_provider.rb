@@ -27,12 +27,3 @@ module DbProvider
   end
 
 end
-
-
-# == DB providers requires =====================================================
-
-require 'db_provider/yaml_provider'
-
-# == Load databases
-$global_cfg = DbProvider::YamlProvider.new(
-    DbProvider::DATABASES_PTH.join('global_cfg.yaml').to_s)

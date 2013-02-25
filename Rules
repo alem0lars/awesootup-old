@@ -26,10 +26,8 @@ compile '/assets/styles/*/' do
   filter :sass, Compass.sass_engine_options
 end
 
-# The scripts are filtered with ERB because we could want to use some kind of
-# pre-processing
+# Don't apply filters for the scripts
 compile '/assets/scripts/*/' do
-  filter :erb
 end
 
 # Markups are filtered with ERB and use the 'default.html' layout
