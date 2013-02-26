@@ -15,3 +15,10 @@ end
 task :irb do
   sh 'bundle exec irb'
 end
+
+task :cleanup_all do
+  Task['cleanup'].invoke()
+  FileUtils.cd(File.join(Dir.pwd, 'output')) do
+    FileUtils.rm_r('*')
+  end
+end

@@ -32,13 +32,13 @@ compile '/assets/scripts/*/' do
   filter :erb
 end
 
-# Markups are filtered with ERB and use the 'default.html' layout
+# Markups are filtered with ERB and use the 'default.html.erb' layout
 compile '/markup/*/' do
   filter :erb
   layout 'default'
 end
 
-# The index page is filtered with ERB and use the 'default.html' layout
+# The index page is filtered with ERB and use the 'default.html.erb' layout
 compile '/markup/' do
   filter :erb
   layout 'default'
@@ -77,14 +77,19 @@ end
 # Route for '/assets/scripts':
 # Append .js to the filename and preserve the directory structure
 route '/assets/scripts/*/' do
-  item.identifier.chop + '.js'
+  item.identifier.chop.gsub(/\.erb$/, '') + '.js'
 end
 
 # Route for all files in '/markup' (except index.html)
 # Append .html to the filename, make the directory hierarchy under '/markup' in
 # the output root directory
 route '/markup/*/' do
-  item.identifier.chop.gsub(/^\/markup/, '/') + '.html'
+  identifier = item.identifier.chop
+  if identifier =~ /\.(yaml|yml)$/
+    nil
+  else
+    identifier.gsub(/^\/markup/, '/').gsub(/\.erb$/, '') + '.html'
+  end
 end
 
 # Route for '/markup/index.html':
