@@ -71,6 +71,7 @@ requirejs([
   'foundation/foundation',
 
   // App requires
+  'app/logger',
   'app/moving',
   'app/awesootup-module',
   'app/awesootup',
