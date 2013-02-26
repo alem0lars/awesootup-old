@@ -85,7 +85,10 @@ end
 # the output root directory
 route '/markup/*/' do
   identifier = item.identifier.chop
-  if identifier =~ /\.(yaml|yml)$/
+
+  # Compile excluding configurations
+  dir_name = File.basename(File.dirname(identifier))
+  if identifier =~ /#{dir_name}\/#{dir_name}_cfg$/
     nil
   else
     identifier.gsub(/^\/markup/, '/').gsub(/\.erb$/, '') + '.html'

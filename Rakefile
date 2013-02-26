@@ -1,3 +1,5 @@
+require 'rake'
+require 'fileutils'
 require 'nanoc3/tasks'
 
 task :watch do
@@ -17,8 +19,12 @@ task :irb do
 end
 
 task :cleanup_all do
-  Task['cleanup'].invoke()
+  Rake::Task['clean'].invoke()
   FileUtils.cd(File.join(Dir.pwd, 'output')) do
-    FileUtils.rm_r('*')
+    sh "rm -R *"
   end
+end
+
+task :fresh_compile => [:cleanup_all] do
+  Rake::Task['compile'].invoke()
 end
