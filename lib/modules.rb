@@ -25,7 +25,7 @@ module Modules
       modules << {
           :name => mod_cfg.get(:name).to_s,
           :desc => mod_cfg.get(:desc).to_s,
-          :requires => mod_cfg.get(:requires).to_s,
+          :provides => mod_cfg.get(:provides).to_s,
           :pre_reqs => pre_reqs,
           :post_reqs => post_reqs,
           :author => mod_cfg.get(:author)
