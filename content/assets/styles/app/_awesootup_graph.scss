@@ -1,0 +1,35 @@
+@import "compass/css3";
+@import "app/config/colors";
+
+$node-width: 80px;
+$node-height: 40px;
+
+
+.awesootup-widget {
+  min-width: 12em;
+  min-height: 10em;
+}
+
+.node {
+  width: $node-width;
+  height: $node-height;
+  background-color: $color-light;
+  color: $color-dark;
+  border: 1px solid $color-dark;
+  @include box-shadow($color-dark 0em 0em 1.2em);
+  @include border-radius(0.3em 0.3em);
+  cursor: pointer;
+
+  &:hover {
+    @include opacity(0.8);
+  }
+
+  .node-title-wrp, .node-title {
+    width: $node-width;
+    height: $node-height - 2px;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+}

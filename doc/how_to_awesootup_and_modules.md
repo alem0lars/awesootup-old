@@ -1,3 +1,12 @@
+# Awesootup Widget #
+
+## Testing code ##
+
+    # INF: First use the testing code from awesootup
+
+    awesootup_widget = require('app/awesootup-widget');
+    my_guide_widget = awesootup_widget.create_awesootup_widget(my_guide);
+
 
 # Awesootup #
 
@@ -52,7 +61,7 @@
     b = awesootup_module.create_module("B", "B Module", "b", ["a"], [], author);
     c = awesootup_module.create_module("C", "C Module", "c", ["a"], [], author);
     z = awesootup_module.create_module("Z", "Z Module", "z", [], [], author);
-    awesootup.create_awesootup("My Guide", "This guide is beautiful", [a,b,c,z], author);
+    my_guide = awesootup.create_awesootup("My Guide", "This guide is beautiful", [a,b,c,z], author);
 
 
 # Module #

@@ -336,6 +336,11 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     this.modules_list = tree_to_list(this.modules_tree);
   };
 
+  /* Method: Find and return the module given its name */
+  Awesootup.prototype.get_modules_tree = function() {
+    return this.modules_tree;
+  };
+
 
   /* == Module export ======================================================= */
 

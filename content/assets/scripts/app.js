@@ -18,6 +18,7 @@ requirejs.config({
     'jquery-plugins/jquery-placeholder'       : ['jquery'],
 
     'sugar'                                   : [],
+    'jit'                                     : ['jquery'],
 
     'foundation/foundation-modernizr'         : ['jquery'],
     'foundation/foundation-accordion'         : ['jquery'],
@@ -51,6 +52,7 @@ requirejs([
 
   // Other libs requires
   'sugar',
+  'jit',
 
   // Zurb-Foundation requires
   'foundation/foundation-modernizr',
@@ -75,6 +77,7 @@ requirejs([
   'app/moving',
   'app/awesootup-module',
   'app/awesootup',
+  'app/awesootup-widget',
   'app/modules-manager',
   'app/awesootups-manager'
 

@@ -13,7 +13,10 @@
 // Import Zurb-Foundation
 @import "foundation";
 
-// Import layout styles
+// Layout styles
 @import "app/main";
 @import "app/header";
 @import "app/footer";
+
+// General styles
+@import "app/awesootup_graph";
