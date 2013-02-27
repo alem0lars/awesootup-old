@@ -12,11 +12,14 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
       "class": "awesootup-widget"
     });
 
+    // The node width. It should be kept in sync with the one set in the css
     this.node_width = 80;
+    // The node height. It should be kept in sync with the one set in the css
     this.node_height = 40;
 
     // The graph is shifted of this.graph_shift_horizontal pixels from the left
     // of the container
+    // INF: It should be greater to the sum of eventual borders, shadows, etc..
     this.graph_shift_horiz = 24;
 
     this.graph = null;
