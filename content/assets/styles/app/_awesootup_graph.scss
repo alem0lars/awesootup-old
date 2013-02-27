@@ -1,13 +1,17 @@
 @import "compass/css3";
 @import "app/config/colors";
 
+
+/* INF: If you modify $node-width and $node-height, you also need to modify
+ *      node_width and node_height in AwesootupWidget
+ *      (assets/scripts/app/awesootup-widget.js) */
 $node-width: 80px;
 $node-height: 40px;
 
 
 .awesootup-widget {
-  min-width: 12em;
   min-height: 10em;
+  overflow: auto;
 }
 
 .node {

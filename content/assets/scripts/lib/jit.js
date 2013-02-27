@@ -2905,10 +2905,15 @@ var Canvas;
         this.canvases[i].resize(width, height);
       }
       var style = this.element.style;
-      style.width = width + 'px';
-      style.height = height + 'px';
-      if(this.labelContainer)
-        this.labelContainer.style.width = width + 'px';
+      if (!(width == null)) {
+        style.width = width + 'px';
+        if(this.labelContainer) {
+          this.labelContainer.style.width = width + 'px';
+        }
+      }
+      if (!(height == null)) {
+        style.height = height + 'px';
+      }
     },
     /*
       Method: translate
@@ -3096,10 +3101,16 @@ var Canvas;
           canvas = this.canvas,
           styles = canvas.style;
       this.size = false;
-      canvas.width = width;
-      canvas.height = height;
-      styles.width = width + "px";
-      styles.height = height + "px";
+
+      if (!(width == null)) {
+        canvas.width = width;
+        styles.width = width + "px";
+      }
+      if (!(height == null)) {
+        canvas.height = height;
+        styles.height = height + "px";
+      }
+
       //small ExCanvas fix
       if(!supportsCanvas) {
         this.translateToCenter(size);
