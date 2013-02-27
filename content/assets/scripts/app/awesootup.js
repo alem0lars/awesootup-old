@@ -41,6 +41,24 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     });
   }
 
+  function tree_to_list(tree) {
+    var result = [tree['value']];
+
+    var tree_to_list_internal = function(tree, list) {
+      tree['children'].each(function(child) {
+        list.add(child['value']);
+      });
+
+      tree['children'].each(function(child) {
+        tree_to_list_internal(child, list);
+      });
+
+      return list;
+    };
+
+    return tree_to_list_internal(tree, result);
+  }
+
   function normalize_modules(modules) {
     if (Object.isObject(modules)) {
       if (!validate_modules_from_tree(modules)) {
@@ -149,9 +167,6 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     /* } */
 
     /* { Build the tree from table */
-    console.log("-- Table --");
-    console.log(table);
-    console.log("-----------");
     while(!table_is_in_tree()) {
       table.each(function(row) {
         if (is_in_tree(row['pre_reqs']) && is_in_tree(row['pre_reqs_direct'])) {
@@ -207,12 +222,13 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
 
     this.desc = desc;
 
-    this.modules = normalize_modules(modules);
+    this.modules_tree = normalize_modules(modules);
+    this.modules_list = tree_to_list(this.modules_tree);
 
-    if (this.modules.length == 0) {
+    if (this.modules_list.isEmpty()) {
       this.cur_module = null;
     } else {
-      this.cur_module = this.modules[0];
+      this.cur_module = this.modules_list[0];
     }
 
     if (!(Object.isObject(author))) {
@@ -249,35 +265,38 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     return this.cur_module;
   };
 
-  /* Method: Return the previous module */
+  /* Method: Return the previous module
+   * or null if the awesootup is already in the beginning */
   Awesootup.prototype.get_prev_module = function() {
     var prev = null;
     var that = this;
 
-    this.modules.each(function(index) {
-      if ((that.modules[index] === this.cur_module) && (index > 0)) {
-        prev = that.modules[index - 1];
+    this.modules_list.each(function(index) {
+      if ((that.modules_list[index] === this.cur_module) && (index > 0)) {
+        prev = that.modules_list[index - 1];
       }
     });
 
     return prev;
   };
 
-  /* Method: Return the next module */
+  /* Method: Return the next module
+   * or null if the awesootup is already in the end */
   Awesootup.prototype.get_next_module = function() {
     var next = null;
     var that = this;
 
-    this.modules.each(function(index) {
-      if ((that.modules[index] === this.cur_module) &&
-          (index < (that.modules.length-1))) {
-        next = that.modules[index + 1];
+    this.modules_list.each(function(index) {
+      if ((that.modules_list[index] === this.cur_module) &&
+          (index < (that.modules_list.length-1))) {
+        next = that.modules_list[index + 1];
       }
     });
 
     return next;
   };
 
+  /* Method: Change the current module to the previous module */
   Awesootup.prototype.back = function() {
     var prev_module = this.get_prev_module();
     if (!(prev_module === null)) {
@@ -285,6 +304,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     }
   };
 
+  /* Method: Change the current module to the next module */
   Awesootup.prototype.next = function() {
     var next_module = this.get_next_module();
     if (!(next_module === null)) {
@@ -292,21 +312,30 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     }
   };
 
+  /* Method: Restart the awesootup by changing the current module */
   Awesootup.prototype.restart = function() {
-    if (this.modules.length == 0) {
+    if (this.modules_list.length == 0) {
       this.cur_module = null;
     } else {
-      this.cur_module = this.modules[0];
+      this.cur_module = this.modules_list[0];
     }
   };
 
+  /* Method: Add the provided module to the modules tree as a child of the
+   * provided parent module
+   * and reflect the changes in the modules list representation */
   Awesootup.prototype.add_module = function(parent, mod) {
-    add_node(this.modules, parent, mod);
+    add_node(this.modules_tree, parent, mod);
+    this.modules_list = tree_to_list(this.modules_tree);
   };
 
+  /* Method: Remove the provided module from the modules tree
+   * and reflect the changes in the modules list representation */
   Awesootup.prototype.remove_module = function(mod) {
-    remove_node(this.modules, mod);
+    remove_node(this.modules_tree, mod);
+    this.modules_list = tree_to_list(this.modules_tree);
   };
+
 
   /* == Module export ======================================================= */
 
@@ -317,45 +346,3 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   };
 
 });
-
-
-/* == Usage examples ======================================================== */
-
-// var author = {
-//   'name': 'Alessandro Molari',
-//   'email': 'molari.alessandro@gmail.com',
-//   'website': 'http://molarialessandro.info'
-// };
-//
-// var bootstrap_module = new Module('bootstrap',
-//     'Bootstrap the gentoo setup', 'bootstrap', [], [], author);
-//
-// var grub2_module = new Module('grub2',
-//     'Grub2 Setup', 'bootloader', ['bootstrap'], [], author);
-//
-// var fbcondecor_module = new Module('fbcondecor',
-//     'Framebuffer decorations', ['bootloader'], [], author);
-//
-// var my_awesootup = new Awesootup(
-//     [bootstrap_module, grub2_module, fbcondecor_module], author);
-//
-// my_awesootup.get_cur_module();  // returns: bootstrap_module
-// my_awesootup.get_prev_module(); // returns: null
-// my_awesootup.get_next_module(); // returns: grub2_module
-//
-// my_awesootup.back();            // cur_module === bootstrap_module
-// my_awesootup.next();            // cur_module === grub2_module
-// my_awesootup.get_cur_module();  // returns: grub2_module
-//
-// my_awesootup.back();            // cur_module === bootstrap_module
-// my_awesootup.next();            // cur_module === grub2_module
-// my_awesootup.get_cur_module();  // returns: grub2_module
-// my_awesootup.get_prev_module(); // returns: bootstrap_module
-// my_awesootup.get_next_module(); // returns: fbcondecor_module
-//
-// my_awesootup.next();            // cur_module === fbcondecor_module
-// my_awesootup.get_cur_module();  // returns: fbcondecor_module
-// my_awesootup.get_prev_module(); // returns: grub2_module
-// my_awesootup.get_next_module(); // returns: null
-//
-// my_awesootup.restart();         // cur_module === bootstrap_module

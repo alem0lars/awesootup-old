@@ -75,22 +75,3 @@ define(['jquery', 'sugar'], function($, sugar) {
   };
 
 });
-
-
-/* == Usage examples ======================================================== */
-
-// var author = {
-//   'name': 'Alessandro Molari',
-//   'email': 'molari.alessandro@gmail.com',
-//   'website': 'http://molarialessandro.info'
-// };
-//
-// var grub2_module = new AwesootupModule('grub2', 'Grub2 Setup', 'bootloader',
-//     ['bootstrap'], ['fbcondecor'], author);
-//
-// grub2_module.get_name(); // returns: 'grub2'
-// grub2_module.get_desc(); // returns: 'Grub2 Setup'
-// grub2_module.get_provides(); // returns: 'bootloader'
-// grub2_module.get_uri(); // returns: '/guide/modules/grub2.html'
-// grub2_module.get_pre_reqs(); // returns: ['bootstrap']
-// grub2_module.get_post_reqs(); // returns: ['fbcondecor']
