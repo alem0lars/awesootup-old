@@ -107,6 +107,34 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       return sat;
     };
 
+    var update_satisfied_by = function() {
+      // Clear sat_by for each row in the table
+      table.each(function(row) { row['sat_by'] = []; });
+
+      // Compute the new sat_by for each row in the table
+      table.each(function(row_i) {
+        row_i['pre_reqs'].union(row_i['pre_reqs_direct']).each(
+            function(pre_req) {
+              table.each(function(row_j) {
+                if ((pre_req == row_j['node'].get_provides()) &&
+                    row_i['in_tree']) {
+                  row_j['sat_by'].add(row_i);
+                }
+              });
+            }
+        );
+      });
+    };
+
+    var find_satisfied_by = function(req) {
+      var row_for_req = table.find(function(row) {
+        return (req == row['node'].get_provides())
+      });
+      return row_for_req['sat_by'].isEmpty() ?
+          row_for_req :
+          row_for_req['sat_by'][0];
+    };
+
     var table_is_in_tree = function() {
       return (table.find(function(row) {
         return row['in_tree'] == false
@@ -121,6 +149,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       table.add({
         'node': mod,
         'pre_reqs': Object.clone(mod.get_pre_reqs(), true), // deep clone
+        'pre_reqs_direct': [],
         'sat_by': [],
         'in_tree': false
       });
@@ -131,7 +160,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
         var found_provider = table.find(function(row) {
           return row['node'].get_provides() == post_req
         });
-        found_provider['pre_reqs'].add(mod.get_provides());
+        found_provider['pre_reqs_direct'].add(mod.get_provides());
       });
     });
 
@@ -140,24 +169,37 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     /* { Build the tree from table */
     while(!table_is_in_tree()) {
       table.each(function(row) {
-        if (is_in_tree(row['pre_reqs'])) {
-          if(row['pre_reqs'].isEmpty()) {
+        if (is_in_tree(row['pre_reqs']) && is_in_tree(row['pre_reqs_direct'])) {
+          if(row['pre_reqs'].isEmpty() && row['pre_reqs_direct'].isEmpty()) {
             add_node(tree, null, row['node']);
             row['in_tree'] = true;
           } else {
             // The current node can be added to the tree because it has all
             // dependencies satisfied
 
-            // For each pre-requirement, add the current node as a child of
-            // the first node which provides that requirement
-            row['pre_reqs'].each(function(pre_req) {
-              // Return the first node which provides the pre_req
+            // Add the current node as a child of each node which is direct
+            // pre-requirement
+            row['pre_reqs_direct'].each(function(pre_req_direct) {
+              // Return the first node which provides the pre_req_direct
               var req_provider = table.find(function(r) {
-                return (r['node'].get_provides() == pre_req) && r['in_tree'];
+                return (r['node'].get_provides() == pre_req_direct);
               });
               add_node(tree, req_provider['node'], row['node']);
               row['in_tree'] = true;
             });
+            update_satisfied_by();
+
+            // For each node which is a normal pre-requirement (non direct),
+            // add the current node as a child to the first node which satisfies
+            // the pre-requirement node if the pre-requirement is already
+            // satisfied by previous satisfied pre-requirement nodes
+            // (both direct and non-direct)
+            row['pre_reqs'].each(function(pre_req) {
+              var req_provider = find_satisfied_by(pre_req);
+              add_node(tree, req_provider['node'], row['node']);
+              row['in_tree'] = true;
+            });
+            update_satisfied_by();
 
           }
         } else {
