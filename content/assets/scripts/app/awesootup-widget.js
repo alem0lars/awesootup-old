@@ -22,6 +22,10 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
     // INF: It should be greater to the sum of eventual borders, shadows, etc..
     this.graph_shift_horiz = 24;
 
+    this.min_top = 0;
+    this.max_top = 0;
+    this.canvas_height = 0;
+
     this.graph = null;
 
     this.drawed = false;
@@ -39,6 +43,8 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
       this.graph = new $jit.ST({
         /* The graph container */
         'injectInto': that.container_id,
+        /* Animation duration */
+        duration: 0,
         /* Levels of node indentation to show */
         levelsToShow: that.get_levels_to_show(),
         /* The offset for the root node from the center of the canvas */
@@ -55,12 +61,7 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
           lineWidth: 2,
           color: "#000000"
         },
-        /* Enable navigation */
-        Navigation: {
-          enable: true,
-          panning: true
-        },
-        levelDistance: 32,
+        levelDistance: 48,
         /* Called when a node has been created */
         onCreateLabel: function (label, node) {
           label.id = node.id;
@@ -71,9 +72,26 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
                   "</div>";
         },
         onPlaceLabel: function (domElement) {
-          var style = domElement.style;
-          style.display = '';
-          style.cursor = 'pointer';
+          var top = parseInt(domElement.style.top, 10);
+
+          if (top < that.min_top) {
+            that.min_top = top;
+          }
+          if (top > that.max_top) {
+            that.max_top = top;
+          }
+        },
+        onComplete: function() {
+          var height = (that.min_top < 0) ?
+              (that.max_top - that.min_top) :
+              (that.max_top + that.min_top);
+
+          if (that.canvas_height != height) {
+            that.canvas_height = height;
+            that.$container.height(height);
+            that.graph.canvas.resize(null, height);
+            that.redraw();
+          }
         }
       });
 
@@ -82,10 +100,8 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
 
       // Load the graph data into the graph
       this.graph.loadJSON(graph_data);
-
-      // The widget has been drawed
-      this.drawed = true;
     }
+
   };
 
   AwesootupWidget.prototype.get_levels_to_show = function () {
@@ -120,10 +136,9 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
       graph_data['data'] = {desc: tree['value'].get_desc()};
       graph_data['children'] = [];
       tree['children'].each(function (child) {
-        var graph_data_child = {};
-        compute_graph_data(child, graph_data_child);
-        graph_data['children'].add(graph_data_child);
+        graph_data['children'].add(compute_graph_data(child, {}));
       });
+      return graph_data;
     };
 
     compute_graph_data(this.awesootup.get_modules_tree(), result);
@@ -153,16 +168,18 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
       that.redraw();
     });
 
-    // Trigger the initial redraw
-    that.redraw();
-  };
-
-  AwesootupWidget.prototype.redraw = function () {
     // Compute node positions and layout
     this.graph.compute();
 
     // Emulate a click on the root node
     this.graph.onClick(this.graph.root);
+
+    // The widget has been drawed
+    this.drawed = true;
+  };
+
+  AwesootupWidget.prototype.redraw = function () {
+    this.graph.refresh();
   };
 
 

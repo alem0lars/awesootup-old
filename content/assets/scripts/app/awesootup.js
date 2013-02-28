@@ -45,11 +45,10 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     var result = [tree['value']];
 
     var tree_to_list_internal = function(tree, list) {
-      tree['children'].each(function(child) {
-        list.add(child['value']);
-      });
+      var cur_level_list = [];
 
       tree['children'].each(function(child) {
+        cur_level_list.add(child['value']);
         tree_to_list_internal(child, list);
       });
 
@@ -140,26 +139,24 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     /* { Build the tree from table */
     while(!table_is_in_tree()) {
       table.each(function(row) {
-        if (is_in_tree(row['pre_reqs'])) {
-          if(row['pre_reqs'].isEmpty()) {
-            add_node(tree, null, row['node']);
-            row['in_tree'] = true;
-          } else {
-            // The current node can be added to the tree because it has all
-            // dependencies satisfied
+        if(row['pre_reqs'].isEmpty()) {
+          add_node(tree, null, row['node']);
+          row['in_tree'] = true;
+        } else if (is_in_tree(row['pre_reqs']) && !row['in_tree']) {
+          // The current node can be added to the tree because it has all
+          // dependencies satisfied
 
-            // For each pre-requirement, add the current node as a child of
-            // the first node which provides that requirement
-            row['pre_reqs'].each(function(pre_req) {
-              // Return the first node which provides the pre_req
-              var req_provider = table.find(function(r) {
-                return (r['node'].get_provides() == pre_req) && r['in_tree'];
-              });
-              add_node(tree, req_provider['node'], row['node']);
-              row['in_tree'] = true;
+          // For each pre-requirement, add the current node as a child of
+          // the first node which provides that requirement
+          row['pre_reqs'].each(function(pre_req) {
+            // Return the first node which provides the pre_req
+            var req_provider = table.find(function(r) {
+              return (r['node'].get_provides() == pre_req) && r['in_tree'];
             });
+            add_node(tree, req_provider['node'], row['node']);
+          });
 
-          }
+          row['in_tree'] = true;
         } else {
           // row['node'] hasn't all dependencies satisfied => skip
         }
