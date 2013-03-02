@@ -42,20 +42,78 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   }
 
   function tree_to_list(tree) {
-    var result = [tree['value']];
+    var list = [], reversed_list = [],
+        table = [];
 
-    var tree_to_list_internal = function(tree, list) {
-      var cur_level_list = [];
+    // ==> Convert the tree into the table format
+    var tree_to_table = function(cur_tree) {
 
-      tree['children'].each(function(child) {
-        cur_level_list.add(child['value']);
-        tree_to_list_internal(child, list);
+      // {
+      //   Set the current table row to the one already present in the table
+      //   which matches the cur_tree value (in this case we already navigated
+      //   to the cur_tree['value'] from another path)
+      //   or create a new row for the table (in this case we didn't have
+      //   navigated the cur_tree['value'] yet)
+      var row = table.find(function(tr) {
+        return Object.equal(tr['node'], cur_tree['value']);
       });
 
-      return list;
+      if (row == null) {
+        // The table doesn't already contain the cur_tree['value']
+        // => Create the row and add it to the table
+
+        row = { node: cur_tree['value'], point_to: [] };
+
+        table.add(row);
+      }
+      // }
+
+      cur_tree['children'].each(function(child) {
+        row['point_to'].add(child['value']);
+      });
+
+      cur_tree['children'].each(function(child) {
+        tree_to_table(child);
+      });
     };
 
-    return tree_to_list_internal(tree, result);
+    tree_to_table(tree);
+
+    // ==> Convert the table to list
+    var table_to_list = function() {
+      while(!table.isEmpty()) {
+        var free_elems_rows = table.findAll(function(row) {
+          return row['point_to'].isEmpty();
+        });
+
+        // Update the list with the free elements
+        free_elems_rows.each(function(free_elem_row) {
+          list.add(free_elem_row['node']);
+        });
+
+        // Update the table removing the free_elems in the point_to column
+        free_elems_rows.each(function(free_elem_row) {
+          table.each(function(tr) {
+            tr['point_to'].remove(function(point_to_elem) {
+              return Object.equal(point_to_elem, free_elem_row['node']);
+            });
+          });
+        });
+
+        // Update the table removing the free rows
+        free_elems_rows.each(function(free_elem_row) {
+          table.remove(function(tr) {
+            return Object.equal(tr['node'], free_elem_row['node']);
+          });
+        });
+      }
+    };
+
+    table_to_list();
+
+    list.each(function(elem) { reversed_list.insert(elem, 0); });
+
+    return reversed_list;
   }
 
   function normalize_modules(modules) {
