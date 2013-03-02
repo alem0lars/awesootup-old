@@ -7,7 +7,9 @@
  *      (assets/scripts/app/awesootup-widget.js) */
 $node-width: 80px;
 $node-height: 40px;
-
+$border-size: 1px;
+$border-radius: 0.3em;
+$blur: 0.8em;
 
 .awesootup-widget {
   overflow: auto;
@@ -16,23 +18,32 @@ $node-height: 40px;
 .node {
   width: $node-width;
   height: $node-height;
-  background-color: $color-light;
-  color: $color-dark;
-  border: 1px solid $color-dark;
-  @include box-shadow($color-dark 0em 0em 1.2em);
-  @include border-radius(0.3em 0.3em);
-  cursor: pointer;
 
-  &:hover {
-    @include opacity(0.8);
-  }
+  .node-title-wrp {
+    width: inherit;
+    height: inherit;
 
-  .node-title-wrp, .node-title {
-    width: $node-width;
-    height: $node-height - 2px;
-    text-decoration: none;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
+    background-color: $color-dark;
+    color: $color-light;
+
+    border: $border-size solid $color-dark;
+    @include border-radius($border-radius $border-radius);
+
+    .node-title {
+      width: inherit;
+      height: inherit;
+
+      text-align: center;
+
+      @include box-shadow(black 0em 0em $blur inset);
+      @include border-radius($border-radius $border-radius);
+
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover {
+        color: $color-cyan;
+      }
+    }
   }
 }

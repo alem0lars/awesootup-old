@@ -2907,7 +2907,6 @@ var Canvas;
       var style = this.element.style;
       if (!(width == null)) {
         style.width = width + 'px';
-
         if(this.labelContainer) {
           this.labelContainer.style.width = width + 'px';
         }
@@ -3102,6 +3101,7 @@ var Canvas;
           canvas = this.canvas,
           styles = canvas.style;
       this.size = false;
+
       if (!(width == null)) {
         canvas.width = width;
         styles.width = width + "px";
@@ -3110,14 +3110,17 @@ var Canvas;
         canvas.height = height;
         styles.height = height + "px";
       }
+
       //small ExCanvas fix
       if(!supportsCanvas) {
         this.translateToCenter(size);
       } else {
         this.translateToCenter();
       }
-      this.translateOffsetX = this.translateOffsetY = 0;
-      this.scaleOffsetX = this.scaleOffsetY = 1;
+      this.translateOffsetX =
+        this.translateOffsetY = 0;
+      this.scaleOffsetX = 
+        this.scaleOffsetY = 1;
       this.clear();
       this.viz.resize(width, height, this);
     },

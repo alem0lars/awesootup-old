@@ -17,9 +17,14 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
     // The node height. It should be kept in sync with the one set in the css
     this.node_height = 40;
 
+    // The graph is shifted of this.graph_shift_horizontal pixels from the left
+    // of the container
+    // INF: It should be greater to the sum of eventual borders, shadows, etc..
+    this.graph_shift_horiz = 24;
+
     this.min_top = 0;
     this.max_top = 0;
-    this.canvas_distance = 0;
+    this.canvas_height = 0;
 
     this.graph = null;
 
@@ -43,7 +48,8 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
         /* Levels of node indentation to show */
         levelsToShow: that.get_levels_to_show(),
         /* The offset for the root node from the center of the canvas */
-        offsetX: (that.$container.width() - that.node_width) / 2,
+        offsetX: (that.$container.width() -
+            (that.node_width + that.graph_shift_horiz)) / 2,
         /* Node options */
         Node: {
           type: 'none',
@@ -59,8 +65,11 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
         /* Called when a node has been created */
         onCreateLabel: function (label, node) {
           label.id = node.id;
-          label.innerHTML = "<div class=\"node-title-wrp has-tip\" data-width=\"210\" title=\"{tooltip}\">\n  <div class=\"node-title\">{name}</div>\n</div>"
-              .assign({ tooltip: node['data']['desc'], name: node['name'] });
+          label.innerHTML =
+              "<div class=\"node-title-wrp has-tip\" data-width=\"210\" title=\""
+                  + node['data']['desc'] + "\">" +
+                  "<strong class=\"node-title\">" + node['name'] + "</strong>" +
+                  "</div>";
         },
         onPlaceLabel: function (domElement) {
           var top = parseInt(domElement.style.top, 10);
@@ -73,15 +82,15 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
           }
         },
         onComplete: function() {
-          var distance = that.max_top + (that.min_top).abs();
+          var height = (that.min_top < 0) ?
+              (that.max_top - that.min_top) :
+              (that.max_top + that.min_top);
 
-          if (that.canvas_distance != distance) {
-            that.canvas_distance = distance;
-            that.$container.height(that.canvas_distance);
-            that.graph.canvas.resize(null, that.canvas_distance);
+          if (that.canvas_height != height) {
+            that.canvas_height = height;
+            that.$container.height(height);
+            that.graph.canvas.resize(null, height);
             that.redraw();
-            that.min_top = 0;
-            that.max_top = that.canvas_distance;
           }
         }
       });
@@ -92,6 +101,7 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
       // Load the graph data into the graph
       this.graph.loadJSON(graph_data);
     }
+
   };
 
   AwesootupWidget.prototype.get_levels_to_show = function () {
@@ -152,7 +162,8 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
       var container_width = that.$container.width();
 
       that.graph.canvas.resize(container_width, null);
-      that.graph.config.offsetX = (container_width - that.node_width) / 2;
+      that.graph.config.offsetX =
+          (container_width - (that.node_width + that.graph_shift_horiz)) / 2;
 
       that.redraw();
     });
