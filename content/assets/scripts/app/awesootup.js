@@ -1,4 +1,4 @@
-define(['jquery', 'app/logger', 'sugar'], function($, logger) {
+define(['jquery', 'app/logger', 'sugar'], function ($, logger) {
 
   /* == Awesootup definition ================================================ */
 
@@ -33,7 +33,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   }
 
   function remove_node(tree, node_value) {
-    tree['children'].each(function(child) {
+    tree['children'].each(function (child) {
       if (child['value'] == node_value) {
         tree['children'].remove(child);
       }
@@ -46,7 +46,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
         table = [];
 
     // ==> Convert the tree into the table format
-    var tree_to_table = function(cur_tree) {
+    var tree_to_table = function (cur_tree) {
 
       // {
       //   Set the current table row to the one already present in the table
@@ -54,7 +54,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       //   to the cur_tree['value'] from another path)
       //   or create a new row for the table (in this case we didn't have
       //   navigated the cur_tree['value'] yet)
-      var row = table.find(function(tr) {
+      var row = table.find(function (tr) {
         return Object.equal(tr['node'], cur_tree['value']);
       });
 
@@ -68,11 +68,11 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       }
       // }
 
-      cur_tree['children'].each(function(child) {
+      cur_tree['children'].each(function (child) {
         row['point_to'].add(child['value']);
       });
 
-      cur_tree['children'].each(function(child) {
+      cur_tree['children'].each(function (child) {
         tree_to_table(child);
       });
     };
@@ -80,29 +80,29 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     tree_to_table(tree);
 
     // ==> Convert the table to list
-    var table_to_list = function() {
-      while(!table.isEmpty()) {
-        var free_elems_rows = table.findAll(function(row) {
+    var table_to_list = function () {
+      while (!table.isEmpty()) {
+        var free_elems_rows = table.findAll(function (row) {
           return row['point_to'].isEmpty();
         });
 
         // Update the list with the free elements
-        free_elems_rows.each(function(free_elem_row) {
+        free_elems_rows.each(function (free_elem_row) {
           list.add(free_elem_row['node']);
         });
 
         // Update the table removing the free_elems in the point_to column
-        free_elems_rows.each(function(free_elem_row) {
-          table.each(function(tr) {
-            tr['point_to'].remove(function(point_to_elem) {
+        free_elems_rows.each(function (free_elem_row) {
+          table.each(function (tr) {
+            tr['point_to'].remove(function (point_to_elem) {
               return Object.equal(point_to_elem, free_elem_row['node']);
             });
           });
         });
 
         // Update the table removing the free rows
-        free_elems_rows.each(function(free_elem_row) {
-          table.remove(function(tr) {
+        free_elems_rows.each(function (free_elem_row) {
+          table.remove(function (tr) {
             return Object.equal(tr['node'], free_elem_row['node']);
           });
         });
@@ -111,7 +111,9 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
 
     table_to_list();
 
-    list.each(function(elem) { reversed_list.insert(elem, 0); });
+    list.each(function (elem) {
+      reversed_list.insert(elem, 0);
+    });
 
     return reversed_list;
   }
@@ -139,7 +141,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       return false;
     } else {
       var valid = true;
-      modules['children'].each(function(child) {
+      modules['children'].each(function (child) {
         valid = valid && validate_modules_from_tree(child);
       });
       return valid;
@@ -152,10 +154,10 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
 
     /* { Utility functions */
 
-    var is_in_tree = function(reqs) {
+    var is_in_tree = function (reqs) {
       var sat = true;
-      reqs.each(function(req) {
-        table.each(function(row) {
+      reqs.each(function (req) {
+        table.each(function (row) {
           if (row['node'].get_provides() == req) {
             sat = sat && row['in_tree']
           }
@@ -164,8 +166,8 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       return sat;
     };
 
-    var table_is_in_tree = function() {
-      return (table.find(function(row) {
+    var table_is_in_tree = function () {
+      return (table.find(function (row) {
         return row['in_tree'] == false
       }) == null);
     };
@@ -174,7 +176,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
 
     /* { Build the table from modules */
 
-    modules.each(function(mod) {
+    modules.each(function (mod) {
       table.add({
         'node': mod,
         'pre_reqs': Object.clone(mod.get_pre_reqs(), true), // deep clone
@@ -183,9 +185,9 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       });
     });
 
-    modules.each(function(mod) {
-      mod.get_post_reqs().each(function(post_req) {
-        var found_provider = table.find(function(row) {
+    modules.each(function (mod) {
+      mod.get_post_reqs().each(function (post_req) {
+        var found_provider = table.find(function (row) {
           return row['node'].get_provides() == post_req
         });
         found_provider['pre_reqs'].add(mod.get_provides());
@@ -195,9 +197,9 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
     /* } */
 
     /* { Build the tree from table */
-    while(!table_is_in_tree()) {
-      table.each(function(row) {
-        if(row['pre_reqs'].isEmpty()) {
+    while (!table_is_in_tree()) {
+      table.each(function (row) {
+        if (row['pre_reqs'].isEmpty()) {
           add_node(tree, null, row['node']);
           row['in_tree'] = true;
         } else if (is_in_tree(row['pre_reqs']) && !row['in_tree']) {
@@ -206,9 +208,9 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
 
           // For each pre-requirement, add the current node as a child of
           // the first node which provides that requirement
-          row['pre_reqs'].each(function(pre_req) {
+          row['pre_reqs'].each(function (pre_req) {
             // Return the first node which provides the pre_req
-            var req_provider = table.find(function(r) {
+            var req_provider = table.find(function (r) {
               return (r['node'].get_provides() == pre_req) && r['in_tree'];
             });
             add_node(tree, req_provider['node'], row['node']);
@@ -252,39 +254,45 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
       };
     } else {
       this.author = author;
-      if (!(Object.has(author, 'name'))) { this.author['name'] = null; }
-      if (!(Object.has(author, 'email'))) { this.author['email'] = null; }
-      if (!(Object.has(author, 'name'))) { this.author['name'] = null; }
+      if (!(Object.has(author, 'name'))) {
+        this.author['name'] = null;
+      }
+      if (!(Object.has(author, 'email'))) {
+        this.author['email'] = null;
+      }
+      if (!(Object.has(author, 'name'))) {
+        this.author['name'] = null;
+      }
     }
   }
 
   /* Method: Return the awesootup name */
-  Awesootup.prototype.get_name = function() {
+  Awesootup.prototype.get_name = function () {
     return this.name;
   };
 
   /* Method: Return the awesootup description */
-  Awesootup.prototype.get_desc = function() {
+  Awesootup.prototype.get_desc = function () {
     return this.desc;
   };
 
   /* Method: Return the awesootup author */
-  Awesootup.prototype.get_author = function() {
+  Awesootup.prototype.get_author = function () {
     return this.author;
   };
 
   /* Method: Return the current module */
-  Awesootup.prototype.get_cur_module = function() {
+  Awesootup.prototype.get_cur_module = function () {
     return this.cur_module;
   };
 
   /* Method: Return the previous module
    * or null if the awesootup is already in the beginning */
-  Awesootup.prototype.get_prev_module = function() {
+  Awesootup.prototype.get_prev_module = function () {
     var prev = null;
     var that = this;
 
-    this.modules_list.each(function(index) {
+    this.modules_list.each(function (index) {
       if ((that.modules_list[index] === this.cur_module) && (index > 0)) {
         prev = that.modules_list[index - 1];
       }
@@ -295,13 +303,13 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
 
   /* Method: Return the next module
    * or null if the awesootup is already in the end */
-  Awesootup.prototype.get_next_module = function() {
+  Awesootup.prototype.get_next_module = function () {
     var next = null;
     var that = this;
 
-    this.modules_list.each(function(index) {
+    this.modules_list.each(function (index) {
       if ((that.modules_list[index] === this.cur_module) &&
-          (index < (that.modules_list.length-1))) {
+          (index < (that.modules_list.length - 1))) {
         next = that.modules_list[index + 1];
       }
     });
@@ -310,7 +318,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   };
 
   /* Method: Change the current module to the previous module */
-  Awesootup.prototype.back = function() {
+  Awesootup.prototype.back = function () {
     var prev_module = this.get_prev_module();
     if (!(prev_module === null)) {
       this.cur_module = prev_module;
@@ -318,7 +326,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   };
 
   /* Method: Change the current module to the next module */
-  Awesootup.prototype.next = function() {
+  Awesootup.prototype.next = function () {
     var next_module = this.get_next_module();
     if (!(next_module === null)) {
       this.cur_module = next_module;
@@ -326,7 +334,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   };
 
   /* Method: Restart the awesootup by changing the current module */
-  Awesootup.prototype.restart = function() {
+  Awesootup.prototype.restart = function () {
     if (this.modules_list.length == 0) {
       this.cur_module = null;
     } else {
@@ -337,20 +345,20 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   /* Method: Add the provided module to the modules tree as a child of the
    * provided parent module
    * and reflect the changes in the modules list representation */
-  Awesootup.prototype.add_module = function(parent, mod) {
+  Awesootup.prototype.add_module = function (parent, mod) {
     add_node(this.modules_tree, parent, mod);
     this.modules_list = tree_to_list(this.modules_tree);
   };
 
   /* Method: Remove the provided module from the modules tree
    * and reflect the changes in the modules list representation */
-  Awesootup.prototype.remove_module = function(mod) {
+  Awesootup.prototype.remove_module = function (mod) {
     remove_node(this.modules_tree, mod);
     this.modules_list = tree_to_list(this.modules_tree);
   };
 
   /* Method: Find and return the module given its name */
-  Awesootup.prototype.get_modules_tree = function() {
+  Awesootup.prototype.get_modules_tree = function () {
     return this.modules_tree;
   };
 
@@ -358,7 +366,7 @@ define(['jquery', 'app/logger', 'sugar'], function($, logger) {
   /* == Module export ======================================================= */
 
   return {
-    create_awesootup: function(name, desc, modules, author) {
+    create_awesootup: function (name, desc, modules, author) {
       return new Awesootup(name, desc, modules, author);
     }
   };

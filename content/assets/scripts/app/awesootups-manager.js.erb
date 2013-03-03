@@ -1,7 +1,11 @@
-define(['jquery', 'sugar', 'app/awesootup', 'app/modules-manager'], function(
-    $, sugar, awesootup, modules_manager) {
+define([
+  'jquery', 'app/awesootup', 'app/modules-manager', 'store', 'sugar'
+], function ($, awesootup, modules_manager, store) {
 
-  var cur_awesootup = null;
+  var cur_awesootup = store.get('cur_awesootup');
+  if (cur_awesootup == null) {
+    cur_awesootup = null;
+  }
 
   var standalone_awesootup = null;
 
@@ -9,11 +13,11 @@ define(['jquery', 'sugar', 'app/awesootup', 'app/modules-manager'], function(
 
   var avail_awesootups_data = <%= get_avail_awesootups_as_json() %>;
 
-  avail_awesootups_data.each(function(awesootup_data) {
+  avail_awesootups_data.each(function (awesootup_data) {
     var found_modules = [];
 
-    awesootup_data['modules'].each(function(module_name) {
-      found_modules.add(modules_manager.avail_modules.find(function(elem) {
+    awesootup_data['modules'].each(function (module_name) {
+      found_modules.add(modules_manager.avail_modules.find(function (elem) {
         return elem.get_name() == module_name;
       }));
     });
@@ -34,14 +38,15 @@ define(['jquery', 'sugar', 'app/awesootup', 'app/modules-manager'], function(
   /* == AwesootupsManager export ============================================ */
 
   return {
-      standalone_awesootup: standalone_awesootup,
-      popular_awesootups: popular_awesootups,
-      set_cur_awesootup: function(new_cur_awesootup) {
-        cur_awesootup = new_cur_awesootup;
-      },
-      get_cur_awesootup: function() {
-        return cur_awesootup;
-      }
+    standalone_awesootup: standalone_awesootup,
+    popular_awesootups: popular_awesootups,
+    set_cur_awesootup: function (new_cur_awesootup) {
+      cur_awesootup = new_cur_awesootup;
+      store.set('cur_awesootup', cur_awesootup);
+    },
+    get_cur_awesootup: function () {
+      return cur_awesootup;
+    }
   };
 
 });

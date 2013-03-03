@@ -59,8 +59,9 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
         /* Called when a node has been created */
         onCreateLabel: function (label, node) {
           label.id = node.id;
-          label.innerHTML = "<div class=\"node-title-wrp has-tip\" data-width=\"210\" title=\"{tooltip}\">\n  <div class=\"node-title\">{name}</div>\n</div>"
-              .assign({ tooltip: node['data']['desc'], name: node['name'] });
+          label.innerHTML =
+              "<div class=\"node-title-wrp has-tip\" data-width=\"210\" title=\"{tooltip}\">\n  <div class=\"node-title\">{name}</div>\n</div>"
+                  .assign({ tooltip: node['data']['desc'], name: node['name'] });
         },
         onPlaceLabel: function (domElement) {
           var top = parseInt(domElement.style.top, 10);
@@ -72,13 +73,14 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
             that.max_top = top;
           }
         },
-        onComplete: function() {
+        onComplete: function () {
           var distance = that.max_top + (that.min_top).abs();
 
           if (that.canvas_distance != distance) {
             that.canvas_distance = distance;
-            that.$container.height(that.canvas_distance);
-            that.graph.canvas.resize(null, that.canvas_distance);
+            that.$container.height(that.canvas_distance + that.node_height);
+            that.graph.canvas.resize(null,
+                that.canvas_distance + that.node_height);
             that.redraw();
             that.min_top = 0;
             that.max_top = that.canvas_distance;
@@ -148,7 +150,7 @@ define(['jquery', 'app/logger', 'jit', 'sugar'], function ($, logger) {
     // Initialize the graph
     this.initGraph();
 
-    $(window).resize(function() {
+    $(window).resize(function () {
       var container_width = that.$container.width();
 
       that.graph.canvas.resize(container_width, null);

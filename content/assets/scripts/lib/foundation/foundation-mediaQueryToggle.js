@@ -1,11 +1,12 @@
-;(function ($, window, undefined) {
+;
+(function ($, window, undefined) {
   'use strict';
-  
+
   $.fn.foundationMediaQueryViewer = function (options) {
-    var settings = $.extend(options,{toggleKey:77}), // Press 'M'
+    var settings = $.extend(options, {toggleKey: 77}), // Press 'M'
         $doc = $(document);
 
-    $doc.on("keyup.mediaQueryViewer", ":input", function (e){
+    $doc.on("keyup.mediaQueryViewer", ":input", function (e) {
       if (e.which === settings.toggleKey) {
         e.stopPropagation();
       }
@@ -13,7 +14,7 @@
     $doc.on("keyup.mediaQueryViewer", function (e) {
       var $mqViewer = $('#fqv');
 
-      if (e.which === settings.toggleKey) { 
+      if (e.which === settings.toggleKey) {
         if ($mqViewer.length > 0) {
           $mqViewer.remove();
         } else {
