@@ -1,0 +1,36 @@
+/*
+ * jquery.tocify.css 1.2.0
+ *
+ * Author: @gregfranko
+ *
+ * Modified by: @alem0lars
+ */
+
+/* The Table of Contents container element */
+#toc {
+  position: fixed;
+}
+
+/* Top level subheader elements.
+ * These are the first nested items underneath a header element.
+ */
+.sub-header {
+  display: none;
+}
+
+/* The Table of Contents is composed of multiple nested unordered lists.
+ * These styles remove the default styling of an unordered list because
+ * it is ugly.
+ */
+#toc ul, #toc li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+
+/* Twitter Bootstrap Override Style */
+.nav-list > li > a, .nav-list .nav-header {
+  margin: 0px;
+}

@@ -1,0 +1,82 @@
+@import "compass/css3";
+@import "app/config/foundation_config";
+@import "app/config/zindex";
+@import "app/config/colors";
+
+
+$toc-width: 20em;
+
+$header-padding: 0.8em;             // First indent
+$subheader-padding: 1.2em;          // Second indent
+$subsubheader-padding: 1.6em;       // Third indent
+$subsubsubheader-padding: 2em;      // Fourth indent
+$subsubsubsubheader-padding: 2.4em; // Fifth indent
+
+$blur: 0.6em;
+$border-size: 1px;
+
+$toc-border-radius: 0.6em;
+$item-border-radius: 0.2em;
+
+
+#toc {
+  z-index: $zindex-max;
+  top: $topBarHeight;
+  margin: 0;
+  width: $toc-width;
+  background-color: $color-dark;
+  border: 0 solid black;
+  @include border-radius(0 0 $toc-border-radius 0);
+  @include box-shadow(black 0.1em 0.1em $blur);
+
+  .header {
+    line-height: 2em;
+    @include border-radius($item-border-radius $item-border-radius);
+
+    .item {
+      line-height: 2em;
+    }
+
+    .item.active {
+      border: $border-size solid $color-cyan;
+      @include border-radius($item-border-radius $item-border-radius);
+    }
+    .item:not(.active) a {
+      color: $color-light;
+    }
+    .sub-header {
+      .item {
+        font-size: 0.8em;
+      }
+    }
+  }
+
+  .nav-list > li > a {
+    padding: 0.4em;
+  }
+
+  /* { Indentation handling */
+
+  .header { // First indent
+    padding: 0 $header-padding 0 $header-padding;
+
+    .sub-header { // Second indent
+      padding: 0 $subheader-padding 0 $subheader-padding;
+
+      .sub-header { // Thirt indent
+        padding: 0 $subsubheader-padding 0 $subsubheader-padding;
+
+        .sub-header { // Fourth indent
+          padding: 0 $subsubsubheader-padding 0 $subsubsubheader-padding;
+
+          .sub-header { // Fifth indent
+            padding: 0 $subsubsubsubheader-padding 0 $subsubsubsubheader-padding;
+          }
+        }
+      }
+    }
+  }
+
+  /* } */
+
+}

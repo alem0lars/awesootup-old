@@ -32,6 +32,12 @@ compile '/assets/scripts/*/' do
   filter :erb
 end
 
+# Modules are filtered with ERB and use the 'module.html.erb' layout
+compile '/markup/awesootup/modules/*/' do
+  filter :erb
+  layout 'module'
+end
+
 # Markups are filtered with ERB and use the 'default.html.erb' layout
 compile '/markup/*/' do
   filter :erb

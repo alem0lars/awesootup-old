@@ -1,7 +1,7 @@
 requirejs.config({
 
   // By default load any module IDs from js/lib
-  baseUrl: 'assets/scripts/lib',
+  baseUrl: '/assets/scripts/lib',
 
   // If the module ID starts with "app", load it from the "js/app" dir.
   // "paths" config is relative to the baseUrl, and never includes a ".js"
@@ -13,6 +13,7 @@ requirejs.config({
   shim: {
 
     'jquery': { deps: [], exports: '$' },
+    'jquery-ui': ['jquery'],
     'jquery-plugins/jquery-cookie': ['jquery'],
     'jquery-plugins/jquery-event-move': ['jquery'],
     'jquery-plugins/jquery-event-swipe': ['jquery'],
@@ -20,8 +21,12 @@ requirejs.config({
     'jquery-plugins/jquery-placeholder': ['jquery'],
 
     'sugar': [],
+
     'store': [],
+
     'jit': ['jquery'],
+
+    'tocify': ['jquery', 'jquery-ui'],
 
     'foundation/foundation-modernizr': ['jquery'],
     'foundation/foundation-accordion': ['jquery'],
@@ -43,8 +48,8 @@ requirejs.config({
   }
 });
 
-function get_requirejs_modules() {
-  var modules = [
+function get_requires() {
+  var requires = [
 
     // jQuery requires
     'jquery',
@@ -53,11 +58,6 @@ function get_requirejs_modules() {
     'jquery-plugins/jquery-event-swipe',
     'jquery-plugins/jquery-offcanvas',
     'jquery-plugins/jquery-placeholder',
-
-    // Other libs requires
-    'sugar',
-    'store',
-    'jit',
 
     // Zurb-Foundation requires
     'foundation/foundation-modernizr',
@@ -77,6 +77,11 @@ function get_requirejs_modules() {
     'foundation/foundation-topbar',
     'foundation/foundation',
 
+    // Other libs requires
+    'sugar',
+    'store',
+    'jit',
+
     // App - Generic - requires
     'app/logger',
     'app/moving',
@@ -84,22 +89,35 @@ function get_requirejs_modules() {
     'app/awesootup',
     'app/awesootup-widget',
     'app/modules-manager',
-    'app/awesootups-manager',
+    'app/awesootups-manager'
   ];
 
-  function on_page(name, module_name) {
+  function on_page(name, required_name) {
     if ((name == window.location.pathname) ||
         (("/" + name) == window.location.pathname) ||
         ((name + ".html") == window.location.pathname) ||
         (("/" + name + ".html") == window.location.pathname)) {
-      modules.push(module_name);
+      requires.push(required_name);
     }
   }
 
+  function on_module_page(required_name) {
+    if (new RegExp("^.+/modules/.+$", "i").test(window.location.pathname)) {
+      requires.push(required_name);
+    }
+  }
+
+  /* { Requires for the pages of modules */
+  on_module_page('tocify');
+  on_module_page('app/pages/module-global');
+  /* } */
+
+  /* { Requires for specific pages */
   on_page('index', 'app/pages/page-index');
   on_page('awesootup', 'app/pages/page-awesootup');
+  /* } */
 
-  return modules;
+  return requires;
 }
 
-requirejs(get_requirejs_modules());
+requirejs(get_requires());

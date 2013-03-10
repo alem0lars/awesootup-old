@@ -13,6 +13,10 @@
 // Import Zurb-Foundation
 @import "foundation";
 
+// Lib styles
+@import "lib/jquery-ui";
+@import "lib/tocify";
+
 // Layout styles
 @import "app/main";
 @import "app/header";
@@ -20,6 +24,9 @@
 
 // General styles
 @import "app/awesootup_graph";
+
+// Page-global styles
+@import "app/pages/page_module_global";
 
 // Page-specific styles
 @import "app/pages/page_index";

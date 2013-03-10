@@ -1,4 +1,7 @@
+@import "app/config/foundation_config";
+
+
 #main-wrp {
-  padding-top: 60px;
+  padding-top: $topBarHeight + 15px;
   min-height: 40em;
 }
