@@ -1,0 +1,7 @@
+<div id="about-usefullinks-content">
+  <% $global_cfg.get(:useful_links).each do |useful_link| %>
+    <li>
+      <a href="<%= useful_link[:url] %>"><%= useful_link[:title] %></a>
+    </li>
+  <% end %>
+</div>

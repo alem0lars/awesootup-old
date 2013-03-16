@@ -1,20 +1,20 @@
-<div id="main" class="twelve columns page-index">
+<div id="main" class="large-twelve columns page-index">
 
   <!-- == Presentation ===================================================== -->
 
   <div id="presentation-wrp" class="row">
-    <div id="presentation" class="twelve columns">
+    <div id="presentation" class="large-twelve columns">
       <div class="panel rounded">
 
         <!-- == Logo & Title =============================================== -->
 
         <div class="row">
 
-          <div id="logo-wrp" class="five columns">
+          <div id="logo-wrp" class="large-five columns">
             <img id="logo" src="/assets/images/app/logo.svg"/>
           </div>
 
-          <div id="title-wrp" class="seven columns">
+          <div id="title-wrp" class="large-seven columns">
             <h1 id="title"><%= $global_cfg.get(:title) %></h1>
           </div>
 
@@ -23,7 +23,7 @@
         <!-- == Description ================================================ -->
 
         <div class="row">
-          <div class="eight columns centered">
+          <div class="large-eight columns centered">
 
             <h3 id="description" class="subheader">
               The modular guide for gentoo setup that works!
@@ -45,7 +45,7 @@
 
       <!-- == Features ===================================================== -->
 
-      <div id="features-wrp" class="seven columns">
+      <div id="features-wrp" class="large-seven columns">
         <div id="features" class="panel rounded">
 
           <h4 id="features-title">Features</h4>
@@ -97,7 +97,7 @@
 
       <!-- == News ========================================================= -->
 
-      <div id="news-wrp" class="five columns">
+      <div id="news-wrp" class="large-five columns">
         <div id="news" class="panel rounded">
 
           <h4 id="news-title">News</h4>
@@ -113,73 +113,84 @@
   <!-- == AwesootupBuilder ================================================= -->
 
   <div id="awesootupbuilder-wrp" class="row">
-    <div id="awesootupbuilder" class="twelve columns">
+    <div id="awesootupbuilder" class="large-twelve columns">
+
+
       <div class="panel rounded">
 
         <h4 id="awesootupbuilder-title">Awesootup Builder</h4>
 
-        <!-- == AwesootupBuilder titles ==================================== -->
+        <div class="section-container" data-section>
 
-        <dl id="awesootupbuilder-titles" class="tabs">
+          <!-- == AwesootupBuilder Standalone ============================== -->
 
-          <dd id="awesootupbuilder-standalone-title-wrp" class="active">
-            <a id="awesootupbuilder-standalone-title"
-               href="#awesootupbuilder-standalone">
-              <i class="general foundicon-checkmark">&nbsp;&nbsp;Standalone</i>
-            </a>
-          </dd>
+          <section id="awesootup-builder-standalone" class="section">
 
-          <dd id="awesootupbuilder-popular-title-wrp">
-            <a id="awesootupbuilder-popular-title"
-               href="#awesootupbuilder-popular">
-              <i class="general foundicon-star">&nbsp;&nbsp;Popular</i>
-            </a>
-          </dd>
+            <p id="awesootup-builder-standalone-title-wrp" class="title">
+              <a id="awesootupbuilder-standalone-title"
+                 href="#awesootupbuilder-standalone">
+                <i class="general foundicon-checkmark">&nbsp;&nbsp;Standalone</i>
+              </a>
+            </p>
 
-          <dd id="awesootupbuilder-custom-title-wrp">
-            <a id="awesootupbuilder-custom-title"
-               href="#awesootupbuilder-custom">
-              <i class="general foundicon-tools">&nbsp;&nbsp;Custom</i>
-            </a>
-          </dd>
-
-        </dl>
-
-        <!-- == AwesootupBuilder tabs ====================================== -->
-
-        <ul id="awesootupbuilder-tabs" class="tabs-content">
-
-          <li id="awesootupbuilder-standaloneTab" class="active">
-            <div class="row">
-              <div class="eight columns">
-                <h5>
-                  The standalone awesootup is the classic one, containing all
-                  of the basic modules, featuring a complete setup.
-                </h5>
+            <div id="awesootup-builder-standalone-content" class="content">
+              <div class="row">
+                <div class="large-eight columns">
+                  <h5>
+                    The standalone awesootup is the classic one, containing all
+                    of the basic modules, featuring a complete setup.
+                  </h5>
+                </div>
+                <div class="large-four columns">
+                  <a id="start-standalone-awesootup" class="radius button">
+                    Start now
+                  </a>
+                </div>
               </div>
-              <div class="four columns">
-                <a id="start-standalone-awesootup" class="radius button">
-                  Start now
-                </a>
-              </div>
+              <hr/>
+              These are the selected modules:
+              <!-- Here will be inserted the standalone awesootup widget -->
             </div>
-            <hr/>
-            These are the selected modules:
-          </li>
 
-          <li id="awesootupbuilder-popularTab">
-            The following awesootups are the most popular ones:
-          </li>
+          </section>
 
-          <li id="awesootupbuilder-customTab">
-            Create your custom awesootup by selecting the desired modules and
-            by placing them in your desired order:
-          </li>
+          <!-- == AwesootupBuilder Popular ================================= -->
 
-        </ul>
+          <section id="awesootup-builder-popular" class="section">
 
+            <p id="awesootup-builder-popular-title-wrp" class="title">
+              <a id="awesootupbuilder-popular-title"
+                 href="#awesootupbuilder-popular">
+                <i class="general foundicon-star">&nbsp;&nbsp;Popular</i>
+              </a>
+            </p>
+
+            <div id="awesootup-builder-popular-content" class="content">
+              The following awesootups are the most popular ones:
+            </div>
+
+          </section>
+
+          <!-- == AwesootupBuilder Custom ================================== -->
+
+          <section id="awesootup-builder-custom" class="section">
+
+            <p id="awesootup-builder-custom-title-wrp" class="title">
+              <a id="awesootupbuilder-custom-title"
+                 href="#awesootupbuilder-custom">
+                <i class="general foundicon-tools">&nbsp;&nbsp;Custom</i>
+              </a>
+            </p>
+
+            <div id="awesootup-builder-custom-content" class="content">
+              Create your custom awesootup by selecting the desired modules and
+              by placing them in your desired order:
+            </div>
+
+          </section>
+        </div>
       </div>
     </div>
-  </div>
 
+  </div>
 </div>

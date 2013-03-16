@@ -1,0 +1,23 @@
+@import "compass/css3";
+@import "foundation/foundation-global";
+@import "foundation/components/global";
+@import "foundation/components/panels";
+
+@import "app/config/colors";
+
+
+#footer-wrp {
+  @extend .panel;
+
+  margin-bottom: 0;
+  padding-bottom: 0;
+
+  border-top: 1px solid $color-dark;
+  @include box-shadow(black 0em 0em 1.2em);
+}
+
+#about-project-info-wrp,
+#about-project-contribute-wrp,
+#about-contributors-listing-wrp {
+  margin: 2em 0;
+}

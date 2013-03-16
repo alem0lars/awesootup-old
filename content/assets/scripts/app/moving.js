@@ -1,4 +1,6 @@
-define(['jquery'], function ($) {
+define([
+  'jquery'
+], function ($) {
 
   $(".go-to-bottom").click(function () {
     $("html, body").animate({
@@ -16,5 +18,10 @@ define(['jquery'], function ($) {
   $('.select-tab').click(function () {
     $("#" + $(this).data("selectTab")).click();
   });
+
+
+  /* == Moving export ======================================================= */
+
+  return {};
 
 });

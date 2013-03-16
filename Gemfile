@@ -11,11 +11,13 @@ group :nanoc do
   # Allow to watch for changes
   gem 'listen'
   # Allow for events notifications
-  gem 'rb-inotify', '~> 0.8.8'
+  gem 'rb-inotify', '~> 0.9'
 end
 
 group :assets do
   # CSS Framework
   gem 'zurb-foundation'
+
+  gem 'compass'
 end
 

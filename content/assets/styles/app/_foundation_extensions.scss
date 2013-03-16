@@ -1,7 +1,7 @@
 @import "foundation";
 
 
-.full-row {
-  @extend .row;
-  width: 100% !important;
+.row.full-width {
+  width: 100%;
+  max-width: 100%;
 }

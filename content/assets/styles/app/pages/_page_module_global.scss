@@ -21,7 +21,7 @@ $item-border-radius: 0.2em;
 
 #toc {
   z-index: $zindex-max;
-  top: $topBarHeight;
+  top: $topbar-height;
   margin: 0;
   width: $toc-width;
   background-color: $color-dark;

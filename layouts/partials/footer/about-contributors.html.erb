@@ -1,0 +1,69 @@
+<table id="about-contributors-listing" class="large-12">
+
+  <thead id="about-contributors-content-header">
+  <tr>
+    <th>Name</th>
+    <th>Contact</th>
+    <th>Contributions</th>
+  </tr>
+  </thead>
+
+  <tbody id="about-contributors-content-body">
+
+  <!-- == Author contributions =================================== -->
+
+  <tr>
+    <td>
+      <h6>
+        <a href="<%= $global_cfg.get(:author, :website) %>">
+          <%= $global_cfg.get(:author, :name) %>
+        </a>
+      </h6>
+    </td>
+    <td>
+      <a href="mailto:<%= $global_cfg.get(:author, :email) %>">
+        <%= $global_cfg.get(:author, :email) %>
+      </a>
+    </td>
+    <td>
+      <span class="success label">Guide and Website author</span>
+    </td>
+  </tr>
+
+  <!-- == Contributors contributions ============================= -->
+
+  <% $global_cfg.get(:contributors).each do |contributor| %>
+    <tr>
+      <td>
+        <% if contributor.has_key?(:website) %>
+          <h6>
+            <a href="<%= contributor[:website] %>">
+              <%= contributor[:name] %>
+            </a>
+          </h6>
+        <% else %>
+          <h6><%= contributor[:name] %></h6>
+        <% end %>
+      </td>
+      <td>
+        <% if contributor.has_key?(:email) %>
+          <a href="mailto:<%= contributor[:email] %>">
+            <%= contributor[:email] %>
+          </a>
+        <% else %>
+          ---
+        <% end %>
+      </td>
+      <td>
+        <% if contributor.has_key?(:contribution) %>
+          <span><%= contributor[:contribution] %></span>
+        <% else %>
+          ---
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+
+  </tbody>
+
+</table>

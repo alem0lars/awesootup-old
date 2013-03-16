@@ -12,6 +12,7 @@ requirejs.config({
 
   shim: {
 
+    // jQuery shims
     'jquery': { deps: [], exports: '$' },
     'jquery-ui': ['jquery'],
     'jquery-plugins/jquery-cookie': ['jquery'],
@@ -20,30 +21,31 @@ requirejs.config({
     'jquery-plugins/jquery-offcanvas': ['jquery'],
     'jquery-plugins/jquery-placeholder': ['jquery'],
 
+    // Zurb-Foundation shims
+    'foundation/foundation': ['jquery'],
+    'foundation/foundation-modernizr': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-alerts': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-clearing': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-cookie': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-dropdown': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-forms': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-joyride': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-magellan': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-orbit': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-placeholder': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-reveal': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-section': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-tooltips': ['foundation/foundation', 'jquery'],
+    'foundation/foundation-topbar': ['foundation/foundation', 'jquery'],
+
+    // Other libs shims
     'sugar': [],
-
     'store': [],
-
     'jit': ['jquery'],
-
     'tocify': ['jquery', 'jquery-ui'],
-
-    'foundation/foundation-modernizr': ['jquery'],
-    'foundation/foundation-accordion': ['jquery'],
-    'foundation/foundation-alerts': ['jquery'],
-    'foundation/foundation-buttons': ['jquery'],
-    'foundation/foundation-clearing': ['jquery'],
-    'foundation/foundation-forms': ['jquery'],
-    'foundation/foundation-joyride': ['jquery'],
-    'foundation/foundation-magellan': ['jquery'],
-    'foundation/foundation-mediaQueryToggle': ['jquery'],
-    'foundation/foundation-navigation': ['jquery'],
-    'foundation/foundation-orbit': ['jquery'],
-    'foundation/foundation-reveal': ['jquery'],
-    'foundation/foundation-tabs': ['jquery'],
-    'foundation/foundation-tooltips': ['jquery'],
-    'foundation/foundation-topbar': ['jquery'],
-    'foundation/foundation': ['jquery']
+    'highlight': { deps: [], exports: 'highlight', init: function () {
+      hljs.initHighlightingOnLoad();
+    }}
 
   }
 });
@@ -60,22 +62,24 @@ function get_requires() {
     'jquery-plugins/jquery-placeholder',
 
     // Zurb-Foundation requires
+    'foundation/foundation',
     'foundation/foundation-modernizr',
-    'foundation/foundation-accordion',
     'foundation/foundation-alerts',
-    'foundation/foundation-buttons',
     'foundation/foundation-clearing',
+    'foundation/foundation-cookie',
+    'foundation/foundation-dropdown',
     'foundation/foundation-forms',
     'foundation/foundation-joyride',
     'foundation/foundation-magellan',
-    'foundation/foundation-mediaQueryToggle',
-    'foundation/foundation-navigation',
     'foundation/foundation-orbit',
+    'foundation/foundation-placeholder',
     'foundation/foundation-reveal',
-    'foundation/foundation-tabs',
+    'foundation/foundation-section',
     'foundation/foundation-tooltips',
     'foundation/foundation-topbar',
-    'foundation/foundation',
+
+    // Zurb-Foundation Initialization (after all zurb-foundation requires)
+    'app/foundation-init',
 
     // Other libs requires
     'sugar',
@@ -92,28 +96,45 @@ function get_requires() {
     'app/awesootups-manager'
   ];
 
-  function on_page(name, required_name) {
-    if ((name == window.location.pathname) ||
-        (("/" + name) == window.location.pathname) ||
-        ((name + ".html") == window.location.pathname) ||
-        (("/" + name + ".html") == window.location.pathname)) {
-      requires.push(required_name);
-    }
-  }
+  /* { Utility functions */
 
-  function on_module_page(required_name) {
+  var on_page = function (names, required_name) {
+    if (!(names instanceof Array)) {
+      names = [names];
+    }
+
+    for (var idx = 0; idx < names.length; idx++) {
+      var name = names[idx];
+
+      if ((name == window.location.pathname) ||
+          (("/" + name) == window.location.pathname) ||
+          ((name + ".html") == window.location.pathname) ||
+          (("/" + name + ".html") == window.location.pathname)) {
+        requires.push(required_name);
+      }
+    }
+
+    return requires;
+  };
+
+  var on_module_page = function (required_name) {
     if (new RegExp("^.+/modules/.+$", "i").test(window.location.pathname)) {
       requires.push(required_name);
     }
-  }
+
+    return requires;
+  };
+
+  /* } */
 
   /* { Requires for the pages of modules */
   on_module_page('tocify');
-  on_module_page('app/pages/module-global');
+  on_module_page('highlight');
+  on_module_page('app/pages/page-module-global');
   /* } */
 
   /* { Requires for specific pages */
-  on_page('index', 'app/pages/page-index');
+  on_page(['index', '/'], 'app/pages/page-index');
   on_page('awesootup', 'app/pages/page-awesootup');
   /* } */
 

@@ -1,6 +1,6 @@
 define(['jquery', 'sugar'], function ($, sugar) {
 
-  /* == Module definition =================================================== */
+  /* == Awesootup Module definition ========================================= */
 
   /* Constructor */
   function AwesootupModule(name, desc, provides, pre_reqs, post_reqs, author) {

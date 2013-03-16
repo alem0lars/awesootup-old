@@ -1,1009 +1,365 @@
-/*
- * jQuery Orbit Plugin 1.4.0
- * www.ZURB.com/playground
- * Copyright 2010, ZURB
- * Free to use under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- */
-
-
-(function ($) {
+;(function ($, window, document, undefined) {
   'use strict';
 
-  $.fn.findFirstImage = function () {
-    return this.first()
-        .find('img')
-        .andSelf().filter('img')
-        .first();
-  };
+  Foundation.libs = Foundation.libs || {};
 
-  var ORBIT = {
+  Foundation.libs.orbit = {
+    name: 'orbit',
 
-    defaults: {
-      animation: 'horizontal-push',     // fade, horizontal-slide, vertical-slide, horizontal-push, vertical-push
-      animationSpeed: 600,              // how fast animations are
-      timer: true,                      // display timer?
-      advanceSpeed: 4000,               // if timer is enabled, time between transitions
-      pauseOnHover: false,              // if you hover pauses the slider
-      startClockOnMouseOut: false,      // if clock should start on MouseOut
-      startClockOnMouseOutAfter: 1000,  // how long after MouseOut should the timer start again
-      directionalNav: true,             // manual advancing directional navs
-      directionalNavRightText: 'Right', // text of right directional element for accessibility
-      directionalNavLeftText: 'Left',   // text of left directional element for accessibility
-      captions: true,                   // do you want captions?
-      captionAnimation: 'fade',         // fade, slideOpen, none
-      captionAnimationSpeed: 600,       // if so how quickly should they animate in
-      resetTimerOnClick: false,         // true resets the timer instead of pausing slideshow progress on manual navigation
-      bullets: false,                   // true or false to activate the bullet navigation
-      bulletThumbs: false,              // thumbnails for the bullets
-      bulletThumbLocation: '',          // relative path to thumbnails from this file
-      bulletThumbsHideOnSmall: true,	// hide thumbs on small devices
-      afterSlideChange: $.noop,         // callback to execute after slide changes
-      afterLoadComplete: $.noop,        // callback to execute after everything has been loaded
-      fluid: true,
-      centerBullets: true,              // center bullet nav with js, turn this off if you want to position the bullet nav manually
-      singleCycle: false,               // cycles through orbit slides only once
-      slideNumber: false,               // display slide numbers?
-      stackOnSmall: false               // stack slides on small devices (i.e. phones)
+    version: '4.0.0',
+
+    settings: {
+      timer_speed: 10000,
+      animation_speed: 500,
+      bullets: true,
+      stack_on_small: true,
+      container_class: 'orbit-container',
+      stack_on_small_class: 'orbit-stack-on-small',
+      next_class: 'orbit-next',
+      prev_class: 'orbit-prev',
+      timer_container_class: 'orbit-timer',
+      timer_paused_class: 'paused',
+      timer_progress_class: 'orbit-progress',
+      slides_container_class: 'orbit-slides-container',
+      bullets_container_class: 'orbit-bullets',
+      bullets_active_class: 'active',
+      slide_number_class: 'orbit-slide-number',
+      caption_class: 'orbit-caption',
+      active_slide_class: 'active',
+      orbit_transition_class: 'orbit-transitioning'
     },
 
-    activeSlide: 0,
-    numberSlides: 0,
-    orbitWidth: null,
-    orbitHeight: null,
-    locked: null,
-    timerRunning: null,
-    degrees: 0,
-    wrapperHTML: '<div class="orbit-wrapper" />',
-    timerHTML: '<div class="timer"><span class="mask"><span class="rotator"></span></span><span class="pause"></span></div>',
-    captionHTML: '<div class="orbit-caption"></div>',
-    directionalNavHTML: '<div class="slider-nav hide-for-small"><span class="right"></span><span class="left"></span></div>',
-    bulletHTML: '<ul class="orbit-bullets"></ul>',
-    slideNumberHTML: '<span class="orbit-slide-counter"></span>',
+    init: function (scope, method, options) {
+      var self = this;
+      Foundation.inherit(self, 'data_options');
 
-    init: function (element, options) {
-      var $imageSlides,
-          imagesLoadedCount = 0,
-          self = this;
-
-      // Bind functions to correct context
-      this.clickTimer = $.proxy(this.clickTimer, this);
-      this.addBullet = $.proxy(this.addBullet, this);
-      this.resetAndUnlock = $.proxy(this.resetAndUnlock, this);
-      this.stopClock = $.proxy(this.stopClock, this);
-      this.startTimerAfterMouseLeave =
-          $.proxy(this.startTimerAfterMouseLeave, this);
-      this.clearClockMouseLeaveTimer =
-          $.proxy(this.clearClockMouseLeaveTimer, this);
-      this.rotateTimer = $.proxy(this.rotateTimer, this);
-
-      this.options = $.extend({}, this.defaults, options);
-      if (this.options.timer === 'false') {
-        this.options.timer = false;
-      }
-      if (this.options.captions === 'false') {
-        this.options.captions = false;
-      }
-      if (this.options.directionalNav === 'false') {
-        this.options.directionalNav =
-            false;
+      if (typeof method === 'object') {
+        $.extend(true, self.settings, method);
       }
 
-      this.$element = $(element);
-      this.$wrapper = this.$element.wrap(this.wrapperHTML).parent();
-      this.$slides = this.$element.children('img, a, div, figure, li');
+      $('[data-orbit]', scope).each(function(idx, el) {
+        var scoped_self = $.extend(true, {}, self);
+        scoped_self._init(idx, el);
+      });
+    },
 
-      this.$element.on('movestart', function (e) {
-        // If the movestart is heading off in an upwards or downwards
-        // direction, prevent it so that the browser scrolls normally.
-        if ((e.distX > e.distY && e.distX < -e.distY) ||
-            (e.distX < e.distY && e.distX > -e.distY)) {
+    _container_html: function() {
+      var self = this;
+      return '<div class="' + self.settings.container_class + '"></div>';
+    },
+
+    _bullets_container_html: function($slides) {
+      var self = this,
+          $list = $('<ol class="' + self.settings.bullets_container_class + '"></ol>');
+      $slides.each(function(idx, slide) {
+        var $item = $('<li data-orbit-slide-number="' + (idx+1) + '" class=""></li>');
+        if (idx === 0) {
+          $item.addClass(self.settings.bullets_active_class);
+        }
+        $list.append($item);
+      });
+      return $list;
+    },
+
+    _slide_number_html: function(slide_number, total_slides) {
+      var self = this,
+          $container = $('<div class="' + self.settings.slide_number_class + '"></div>');
+      $container.append('<span>' + slide_number + '</span> of <span>' + total_slides + '</span>');
+      return $container;
+    },
+
+    _timer_html: function() {
+      var self = this;
+      if (typeof self.settings.timer_speed === 'number' && self.settings.timer_speed > 0) {
+        return '<div class="' + self.settings.timer_container_class
+          + '"><span></span><div class="' + self.settings.timer_progress_class
+          + '"></div></div>';
+      } else {
+        return '';
+      }
+    },
+
+    _next_html: function() {
+      var self = this;
+      return '<a href="#" class="' + self.settings.next_class + '">Next <span></span></a>';
+    },
+
+    _prev_html: function() {
+      var self = this;
+      return '<a href="#" class="' + self.settings.prev_class + '">Prev <span></span></a>';
+    },
+
+    _init: function (idx, slider) {
+      var self = this,
+          $slides_container = $(slider),
+          $container = $slides_container.wrap(self._container_html()).parent(),
+          $slides = $slides_container.children();
+      
+      $.extend(true, self.settings, self.data_options($slides_container));
+
+      $container.append(self._prev_html());
+      $container.append(self._next_html());
+      $slides_container.addClass(self.settings.slides_container_class);
+      if (self.settings.stack_on_small) {
+        $container.addClass(self.settings.stack_on_small_class);
+      }
+      $container.append(self._slide_number_html(1, $slides.length));
+      $container.append(self._timer_html());
+      if (self.settings.bullets) {
+        $container.after(self._bullets_container_html($slides));
+      }
+      // To better support the "sliding" effect it's easier
+      // if we just clone the first and last slides
+      $slides_container.append($slides.first().clone().attr('data-orbit-slide',''));
+      $slides_container.prepend($slides.last().clone().attr('data-orbit-slide',''));
+      // Make the first "real" slide active
+      $slides_container.css('marginLeft', '-100%');
+      $slides.first().addClass(self.settings.active_slide_class);
+
+      self._init_events($slides_container);
+      self._init_dimensions($slides_container);
+      self._start_timer($slides_container);
+    },
+
+    _init_events: function ($slides_container) {
+      var self = this,
+          $container = $slides_container.parent();
+
+      $(window)
+        .on('load.fndtn.orbit', function() {
+          $slides_container.height('');
+          $slides_container.height($slides_container.height($container.height()));
+          $slides_container.trigger('orbit:ready');
+        })
+        .on('resize.fndtn.orbit', function() {
+          $slides_container.height('');
+          $slides_container.height($slides_container.height($container.height()));
+        });
+
+      $(document).on('click.fndtn.orbit', '[data-orbit-link]', function(e) {
+        e.preventDefault();
+        var id = $(e.currentTarget).attr('data-orbit-link'),
+            $slide = $slides_container.find('[data-orbit-slide=' + id + ']').first();
+
+        if ($slide.length === 1) {
+          self._reset_timer($slides_container, true);
+          self._goto($slides_container, $slide.index(), function() {});
+        }
+      });
+
+      $container.siblings('.' + self.settings.bullets_container_class)
+        .on('click.fndtn.orbit', '[data-orbit-slide-number]', function(e) {
           e.preventDefault();
-        }
-      });
+          self._reset_timer($slides_container, true);
+          self._goto($slides_container, $(e.currentTarget).data('orbit-slide-number'),function() {});
+        });
 
-      this.$element.bind('orbit.next', function () {
-        self.shift('next');
-      });
+      $container
+        .on('orbit:after-slide-change.fndtn.orbit', function(e, orbit) {
+          var $slide_number = $container.find('.' + self.settings.slide_number_class);
 
-      this.$element.bind('orbit.prev', function () {
-        self.shift('prev');
-      });
-
-      this.$element.bind('swipeleft', function () {
-        $(this).trigger('orbit.next');
-      });
-
-      this.$element.bind('swiperight', function () {
-        $(this).trigger('orbit.prev');
-      });
-
-      this.$element.bind('orbit.goto', function (event, index) {
-        self.shift(index);
-      });
-
-      this.$element.bind('orbit.start', function (event, index) {
-        self.startClock();
-      });
-
-      this.$element.bind('orbit.stop', function (event, index) {
-        self.stopClock();
-      });
-
-      $imageSlides = this.$slides.filter('img');
-
-      if ($imageSlides.length === 0) {
-        this.loaded();
-      } else {
-        $imageSlides.bind('imageready', function () {
-          imagesLoadedCount += 1;
-          if (imagesLoadedCount === $imageSlides.length) {
-            self.loaded();
+          if ($slide_number.length === 1) {
+            $slide_number.replaceWith(self._slide_number_html(orbit.slide_number, orbit.total_slides));
           }
+        })
+        .on('orbit:next-slide.fndtn.orbit click.fndtn.orbit', '.' + self.settings.next_class, function(e) {
+          e.preventDefault();
+          self._reset_timer($slides_container, true);
+          self._goto($slides_container, 'next', function() {});
+        })
+        .on('orbit:prev-slide.fndtn.orbit click.fndtn.orbit', '.' + self.settings.prev_class, function(e) {
+          e.preventDefault();
+          self._reset_timer($slides_container, true);
+          self._goto($slides_container, 'prev', function() {});
+        })
+        .on('orbit:toggle-play-pause.fndtn.orbit click.fndtn.orbit touchstart.fndtn.orbit', '.' + self.settings.timer_container_class, function(e) {
+          e.preventDefault();
+          var $timer = $(e.currentTarget).toggleClass(self.settings.timer_paused_class),
+              $slides_container = $timer.closest('.' + self.settings.container_class)
+                .find('.' + self.settings.slides_container_class);
+
+          if ($timer.hasClass(self.settings.timer_paused_class)) {
+            self._stop_timer($slides_container);
+          } else {
+            self._start_timer($slides_container);
+          }
+        })
+        .on('touchstart.fndtn.orbit', function(e) {
+          if (!e.touches) { e = e.originalEvent; }
+          var data = {
+            start_page_x: e.touches[0].pageX,
+            start_page_y: e.touches[0].pageY,
+            start_time: (new Date()).getTime(),
+            delta_x: 0,
+            is_scrolling: undefined
+          };
+          $container.data('swipe-transition', data);
+          e.stopPropagation();
+        })
+        .on('touchmove.fndtn.orbit', function(e) {
+          if (!e.touches) { e = e.originalEvent; }
+          // Ignore pinch/zoom events
+          if(e.touches.length > 1 || e.scale && e.scale !== 1) return;
+
+          var data = $container.data('swipe-transition');
+          if (typeof data === 'undefined') {
+            data = {};
+          }
+
+          data.delta_x = e.touches[0].pageX - data.start_page_x;
+
+          if ( typeof data.is_scrolling === 'undefined') {
+            data.is_scrolling = !!( data.is_scrolling || Math.abs(data.delta_x) < Math.abs(e.touches[0].pageY - data.start_page_y) );
+          }
+
+          if (!data.is_scrolling && !data.active) {
+            e.preventDefault();
+            self._stop_timer($slides_container);
+            var direction = (data.delta_x < 0) ? 'next' : 'prev';
+            data.active = true;
+            self._goto($slides_container, direction, function() {});
+          }
+        })
+        .on('touchend.fndtn.orbit', function(e) {
+          $container.data('swipe-transition', {});
+          e.stopPropagation();
+        });
+    },
+
+    _init_dimensions: function ($slides_container) {
+      var $container = $slides_container.parent(),
+          $slides = $slides_container.children();
+
+      $slides_container.css('width', $slides.length * 100 + '%');
+      $slides.css('width', 100 / $slides.length + '%');
+      $slides_container.height($container.height());
+      $slides_container.css('width', $slides.length * 100 + '%');
+    },
+
+    _start_timer: function ($slides_container) {
+      var self = this,
+          $container = $slides_container.parent();
+
+      var callback = function() {
+        self._reset_timer($slides_container, false);
+        self._goto($slides_container, 'next', function() {
+          self._start_timer($slides_container);
+        });
+      };
+
+      var $timer = $container.find('.' + self.settings.timer_container_class),
+          $progress = $timer.find('.' + self.settings.timer_progress_class),
+          progress_pct = ($progress.width() / $timer.width()),
+          delay = self.settings.timer_speed - (progress_pct * self.settings.timer_speed);
+
+      $progress.animate({'width': '100%'}, delay, 'linear', callback);
+      $slides_container.trigger('orbit:timer-started');
+    },
+
+    _stop_timer: function ($slides_container) {
+      var self = this,
+          $container = $slides_container.parent(),
+          $timer = $container.find('.' + self.settings.timer_container_class),
+          $progress = $timer.find('.' + self.settings.timer_progress_class),
+          progress_pct = $progress.width() / $timer.width()
+      self._rebuild_timer($container, progress_pct * 100 + '%');
+      // $progress.stop();
+      $slides_container.trigger('orbit:timer-stopped');
+      $timer = $container.find('.' + self.settings.timer_container_class);
+      $timer.addClass(self.settings.timer_paused_class);
+    },
+
+    _reset_timer: function($slides_container, is_paused) {
+      var self = this,
+          $container = $slides_container.parent();
+      self._rebuild_timer($container, '0%');
+      if (typeof is_paused === 'boolean' && is_paused) {
+        var $timer = $container.find('.' + self.settings.timer_container_class);
+        $timer.addClass(self.settings.timer_paused_class);
+      }
+    },
+
+    _rebuild_timer: function ($container, width_pct) {
+      // Zepto is unable to stop animations since they
+      // are css-based. This is a workaround for that
+      // limitation, which rebuilds the dom element
+      // thus stopping the animation
+      var self = this,
+          $timer = $container.find('.' + self.settings.timer_container_class),
+          $new_timer = $(self._timer_html()),
+          $new_timer_progress = $new_timer.find('.' + self.settings.timer_progress_class);
+
+      if (typeof Zepto === 'function') {
+        $timer.remove();
+        $container.append($new_timer);
+        $new_timer_progress.css('width', width_pct);
+      } else if (typeof jQuery === 'function') {
+        var $progress = $timer.find('.' + self.settings.timer_progress_class);
+        $progress.css('width', width_pct);
+        $progress.stop();
+      }
+    },
+
+    _goto: function($slides_container, index_or_direction, callback) {
+      var self = this,
+          $container = $slides_container.parent(),
+          $slides = $slides_container.children(),
+          $active_slide = $slides_container.find('.' + self.settings.active_slide_class),
+          active_index = $active_slide.index();
+
+      if ($container.hasClass(self.settings.orbit_transition_class)) {
+        return false;
+      }
+
+      if (index_or_direction === 'prev') {
+        if (active_index === 0) {
+          active_index = $slides.length - 1;
+        }
+        else {
+          active_index--;
+        }
+      }
+      else if (index_or_direction === 'next') {
+        active_index = (active_index+1) % $slides.length;
+      }
+      else if (typeof index_or_direction === 'number') {
+        active_index = (index_or_direction % $slides.length);
+      }
+      if (active_index === ($slides.length - 1) && index_or_direction === 'next') {
+        $slides_container.css('marginLeft', '0%');
+        active_index = 1;
+      }
+      else if (active_index === 0 && index_or_direction === 'prev') {
+        $slides_container.css('marginLeft', '-' + ($slides.length - 1) * 100 + '%');
+        active_index = $slides.length - 2;
+      }
+      // Start transition, make next slide active
+      $container.addClass(self.settings.orbit_transition_class);
+      $active_slide.removeClass(self.settings.active_slide_class);
+      $($slides[active_index]).addClass(self.settings.active_slide_class);
+      // Make next bullet active
+      var $bullets = $container.siblings('.' + self.settings.bullets_container_class);
+      if ($bullets.length === 1) {
+        $bullets.children().removeClass(self.settings.bullets_active_class);
+        $($bullets.children()[active_index-1]).addClass(self.settings.bullets_active_class);
+      }
+      var new_margin_left = '-' + (active_index * 100) + '%';
+      // Check to see if animation will occur, otherwise perform
+      // callbacks manually
+      $slides_container.trigger('orbit:before-slide-change');
+      if ($slides_container.css('marginLeft') === new_margin_left) {
+        $container.removeClass(self.settings.orbit_transition_class);
+        $slides_container.trigger('orbit:after-slide-change', [{slide_number: active_index, total_slides: $slides_container.children().length - 2}]);
+        callback();
+      } else {
+        $slides_container.animate({
+          'marginLeft' : new_margin_left
+        }, self.settings.animation_speed, 'linear', function() {
+          $container.removeClass(self.settings.orbit_transition_class);
+          $slides_container.trigger('orbit:after-slide-change', [{slide_number: active_index, total_slides: $slides_container.children().length - 2}]);
+          callback();
         });
       }
-    },
-
-    loaded: function () {
-      this.$element
-          .addClass('orbit')
-          .css({width: '1px', height: '1px'});
-
-      if (this.options.stackOnSmall) {
-        this.$element.addClass('orbit-stack-on-small');
-      }
-
-      this.$slides.addClass('orbit-slide').css({"opacity": 0});
-
-      this.setDimentionsFromLargestSlide();
-      this.updateOptionsIfOnlyOneSlide();
-      this.setupFirstSlide();
-      this.notifySlideChange();
-
-      if (this.options.timer) {
-        this.setupTimer();
-        this.startClock();
-      }
-
-      if (this.options.captions) {
-        this.setupCaptions();
-      }
-
-      if (this.options.directionalNav) {
-        this.setupDirectionalNav();
-      }
-
-      if (this.options.bullets) {
-        this.setupBulletNav();
-        this.setActiveBullet();
-      }
-
-      this.options.afterLoadComplete.call(this);
-      Holder.run();
-    },
-
-    currentSlide: function () {
-      return this.$slides.eq(this.activeSlide);
-    },
-
-    notifySlideChange: function () {
-      if (this.options.slideNumber) {
-        var txt = (this.activeSlide + 1) + ' of ' + this.$slides.length;
-        this.$element.trigger("orbit.change",
-            {slideIndex: this.activeSlide, slideCount: this.$slides.length});
-        if (this.$counter === undefined) {
-          var $counter = $(this.slideNumberHTML).html(txt);
-          this.$counter = $counter;
-          this.$wrapper.append(this.$counter);
-        } else {
-          this.$counter.html(txt);
-        }
-      }
-    },
-
-    setDimentionsFromLargestSlide: function () {
-      //Collect all slides and set slider size of largest image
-      var self = this,
-          $fluidPlaceholder;
-
-      self.$element.add(self.$wrapper).width(this.$slides.first().outerWidth());
-      self.$element.add(self.$wrapper).height(this.$slides.first().height());
-      self.orbitWidth = this.$slides.first().outerWidth();
-      self.orbitHeight = this.$slides.first().height();
-      $fluidPlaceholder = this.$slides.first().findFirstImage().clone();
-
-
-      this.$slides.each(function () {
-        var slide = $(this),
-            slideWidth = slide.outerWidth(),
-            slideHeight = slide.height();
-
-        if (slideWidth > self.$element.outerWidth()) {
-          self.$element.add(self.$wrapper).width(slideWidth);
-          self.orbitWidth = self.$element.outerWidth();
-        }
-        if (slideHeight > self.$element.height()) {
-          self.$element.add(self.$wrapper).height(slideHeight);
-          self.orbitHeight = self.$element.height();
-          $fluidPlaceholder = $(this).findFirstImage().clone();
-        }
-        self.numberSlides += 1;
-      });
-
-      if (this.options.fluid) {
-        if (typeof this.options.fluid === "string") {
-          // $fluidPlaceholder = $("<img>").attr("src", "http://placehold.it/" + this.options.fluid);
-          $fluidPlaceholder =
-              $("<img>").attr("data-src", "holder.js/" + this.options.fluid);
-          //var inner = $("<div/>").css({"display":"inline-block", "width":"2px", "height":"2px"});
-          //$fluidPlaceholder = $("<div/>").css({"float":"left"});
-          //$fluidPlaceholder.wrapInner(inner);
-
-          //$fluidPlaceholder = $("<div/>").css({"height":"1px", "width":"2px"});
-          //$fluidPlaceholder = $("<div style='display:inline-block;width:2px;height:1px;'></div>");
-        }
-
-        self.$element.prepend($fluidPlaceholder);
-        $fluidPlaceholder.addClass('fluid-placeholder');
-        self.$element.add(self.$wrapper).css({width: 'inherit'});
-        self.$element.add(self.$wrapper).css({height: 'inherit'});
-
-        $(window).bind('resize', function () {
-          self.orbitWidth = self.$element.outerWidth();
-          self.orbitHeight = self.$element.height();
-        });
-      }
-    },
-
-    //Animation locking functions
-    lock: function () {
-      this.locked = true;
-    },
-
-    unlock: function () {
-      this.locked = false;
-    },
-
-    updateOptionsIfOnlyOneSlide: function () {
-      if (this.$slides.length === 1) {
-        this.options.directionalNav = false;
-        this.options.timer = false;
-        this.options.bullets = false;
-      }
-    },
-
-    setupFirstSlide: function () {
-      //Set initial front photo z-index and fades it in
-      var self = this;
-      this.$slides.first()
-          .css({"z-index": 3, "opacity": 1})
-          .fadeIn(function () {
-            //brings in all other slides IF css declares a display: none
-            self.$slides.css({"display": "block"})
-          });
-    },
-
-    startClock: function () {
-      var self = this;
-
-      if (!this.options.timer) {
-        return false;
-      }
-
-      if (this.$timer.is(':hidden')) {
-        this.clock = setInterval(function () {
-          self.$element.trigger('orbit.next');
-        }, this.options.advanceSpeed);
-      } else {
-        this.timerRunning = true;
-        this.$pause.removeClass('active');
-        this.clock =
-            setInterval(this.rotateTimer, this.options.advanceSpeed / 180,
-                false);
-      }
-    },
-
-    rotateTimer: function (reset) {
-      var degreeCSS = "rotate(" + this.degrees + "deg)";
-      this.degrees += 2;
-      this.$rotator.css({
-        "-webkit-transform": degreeCSS,
-        "-moz-transform": degreeCSS,
-        "-o-transform": degreeCSS,
-        "-ms-transform": degreeCSS
-      });
-      if (reset) {
-        this.degrees = 0;
-        this.$rotator.removeClass('move');
-        this.$mask.removeClass('move');
-      }
-      if (this.degrees > 180) {
-        this.$rotator.addClass('move');
-        this.$mask.addClass('move');
-      }
-      if (this.degrees > 360) {
-        this.$rotator.removeClass('move');
-        this.$mask.removeClass('move');
-        this.degrees = 0;
-        this.$element.trigger('orbit.next');
-      }
-    },
-
-    stopClock: function () {
-      if (!this.options.timer) {
-        return false;
-      } else {
-        this.timerRunning = false;
-        clearInterval(this.clock);
-        this.$pause.addClass('active');
-      }
-    },
-
-    setupTimer: function () {
-      this.$timer = $(this.timerHTML);
-      this.$wrapper.append(this.$timer);
-
-      this.$rotator = this.$timer.find('.rotator');
-      this.$mask = this.$timer.find('.mask');
-      this.$pause = this.$timer.find('.pause');
-
-      this.$timer.click(this.clickTimer);
-
-      if (this.options.startClockOnMouseOut) {
-        this.$wrapper.mouseleave(this.startTimerAfterMouseLeave);
-        this.$wrapper.mouseenter(this.clearClockMouseLeaveTimer);
-      }
-
-      if (this.options.pauseOnHover) {
-        this.$wrapper.mouseenter(this.stopClock);
-      }
-    },
-
-    startTimerAfterMouseLeave: function () {
-      var self = this;
-
-      this.outTimer = setTimeout(function () {
-        if (!self.timerRunning) {
-          self.startClock();
-        }
-      }, this.options.startClockOnMouseOutAfter)
-    },
-
-    clearClockMouseLeaveTimer: function () {
-      clearTimeout(this.outTimer);
-    },
-
-    clickTimer: function () {
-      if (!this.timerRunning) {
-        this.startClock();
-      } else {
-        this.stopClock();
-      }
-    },
-
-    setupCaptions: function () {
-      this.$caption = $(this.captionHTML);
-      this.$wrapper.append(this.$caption);
-      this.setCaption();
-    },
-
-    setCaption: function () {
-      var captionLocation = this.currentSlide().attr('data-caption'),
-          captionHTML;
-
-      if (!this.options.captions) {
-        return false;
-      }
-
-      //Set HTML for the caption if it exists
-      if (captionLocation) {
-        //if caption text is blank, don't show captions
-        if ($.trim($(captionLocation).text()).length < 1) {
-          return false;
-        }
-
-        // if location selector starts with '#', remove it so we don't see id="#selector"
-        if (captionLocation.charAt(0) == '#') {
-          captionLocation =
-              captionLocation.substring(1, captionLocation.length);
-        }
-        captionHTML = $('#' + captionLocation).html(); //get HTML from the matching HTML entity
-        this.$caption
-            .attr('id', captionLocation) // Add ID caption TODO why is the id being set?
-            .html(captionHTML); // Change HTML in Caption
-        //Animations for Caption entrances
-        switch (this.options.captionAnimation) {
-          case 'none':
-            this.$caption.show();
-            break;
-          case 'fade':
-            this.$caption.fadeIn(this.options.captionAnimationSpeed);
-            break;
-          case 'slideOpen':
-            this.$caption.slideDown(this.options.captionAnimationSpeed);
-            break;
-        }
-      } else {
-        //Animations for Caption exits
-        switch (this.options.captionAnimation) {
-          case 'none':
-            this.$caption.hide();
-            break;
-          case 'fade':
-            this.$caption.fadeOut(this.options.captionAnimationSpeed);
-            break;
-          case 'slideOpen':
-            this.$caption.slideUp(this.options.captionAnimationSpeed);
-            break;
-        }
-      }
-    },
-
-    setupDirectionalNav: function () {
-      var self = this,
-          $directionalNav = $(this.directionalNavHTML);
-
-      $directionalNav.find('.right').html(this.options.directionalNavRightText);
-      $directionalNav.find('.left').html(this.options.directionalNavLeftText);
-
-      this.$wrapper.append($directionalNav);
-
-      this.$wrapper.find('.left').click(function () {
-        self.stopClock();
-        if (self.options.resetTimerOnClick) {
-          self.rotateTimer(true);
-          self.startClock();
-        }
-        self.$element.trigger('orbit.prev');
-      });
-
-      this.$wrapper.find('.right').click(function () {
-        self.stopClock();
-        if (self.options.resetTimerOnClick) {
-          self.rotateTimer(true);
-          self.startClock();
-        }
-        self.$element.trigger('orbit.next');
-      });
-    },
-
-    setupBulletNav: function () {
-      this.$bullets = $(this.bulletHTML);
-      this.$wrapper.append(this.$bullets);
-      this.$slides.each(this.addBullet);
-      this.$element.addClass('with-bullets');
-      if (this.options.centerBullets) {
-        this.$bullets.css('margin-left',
-            -this.$bullets.outerWidth() / 2);
-      }
-      if (this.options.bulletThumbsHideOnSmall) {
-        this.$bullets.addClass('hide-for-small');
-      }
-    },
-
-    addBullet: function (index, slide) {
-      var position = index + 1,
-          $li = $('<li>' + (position) + '</li>'),
-          thumbName,
-          self = this;
-
-      if (this.options.bulletThumbs) {
-        thumbName = $(slide).attr('data-thumb');
-        if (thumbName) {
-          $li
-              .addClass('has-thumb')
-              .css({background: "url(" + this.options.bulletThumbLocation
-                  + thumbName + ") no-repeat"});
-          ;
-        }
-      }
-      this.$bullets.append($li);
-      $li.data('index', index);
-      $li.click(function () {
-        self.stopClock();
-        if (self.options.resetTimerOnClick) {
-          self.rotateTimer(true);
-          self.startClock();
-        }
-        self.$element.trigger('orbit.goto', [$li.data('index')])
-      });
-    },
-
-    setActiveBullet: function () {
-      if (!this.options.bullets) {
-        return false;
-      } else {
-        this.$bullets.find('li')
-            .removeClass('active')
-            .eq(this.activeSlide)
-            .addClass('active');
-      }
-    },
-
-    resetAndUnlock: function () {
-      this.$slides
-          .eq(this.prevActiveSlide)
-          .css({"z-index": 1});
-      this.unlock();
-      this.options.afterSlideChange.call(this,
-          this.$slides.eq(this.prevActiveSlide),
-          this.$slides.eq(this.activeSlide));
-    },
-
-    shift: function (direction) {
-      var slideDirection = direction;
-
-      //remember previous activeSlide
-      this.prevActiveSlide = this.activeSlide;
-
-      //exit function if bullet clicked is same as the current image
-      if (this.prevActiveSlide == slideDirection) {
-        return false;
-      }
-
-      if (this.$slides.length == "1") {
-        return false;
-      }
-      if (!this.locked) {
-        this.lock();
-        //deduce the proper activeImage
-        if (direction == "next") {
-          this.activeSlide++;
-          if (this.activeSlide == this.numberSlides) {
-            this.activeSlide = 0;
-          }
-        } else if (direction == "prev") {
-          this.activeSlide--
-          if (this.activeSlide < 0) {
-            this.activeSlide = this.numberSlides - 1;
-          }
-        } else {
-          this.activeSlide = direction;
-          if (this.prevActiveSlide < this.activeSlide) {
-            slideDirection = "next";
-          } else if (this.prevActiveSlide > this.activeSlide) {
-            slideDirection = "prev"
-          }
-        }
-
-        //set to correct bullet
-        this.setActiveBullet();
-        this.notifySlideChange();
-
-        //set previous slide z-index to one below what new activeSlide will be
-        this.$slides
-            .eq(this.prevActiveSlide)
-            .css({"z-index": 2});
-
-        //fade
-        if (this.options.animation == "fade") {
-          this.$slides
-              .eq(this.activeSlide)
-              .css({"opacity": 0, "z-index": 3})
-              .animate({"opacity": 1}, this.options.animationSpeed,
-              this.resetAndUnlock);
-          this.$slides
-              .eq(this.prevActiveSlide)
-              .animate({"opacity": 0}, this.options.animationSpeed);
-        }
-
-        //horizontal-slide
-        if (this.options.animation == "horizontal-slide") {
-          if (slideDirection == "next") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({"left": this.orbitWidth, "z-index": 3})
-                .css("opacity", 1)
-                .animate({"left": 0}, this.options.animationSpeed,
-                this.resetAndUnlock);
-          }
-          if (slideDirection == "prev") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({"left": -this.orbitWidth, "z-index": 3})
-                .css("opacity", 1)
-                .animate({"left": 0}, this.options.animationSpeed,
-                this.resetAndUnlock);
-          }
-          this.$slides
-              .eq(this.prevActiveSlide)
-              .css("opacity", 0);
-        }
-
-        //vertical-slide
-        if (this.options.animation == "vertical-slide") {
-          if (slideDirection == "prev") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({"top": this.orbitHeight, "z-index": 3})
-                .css("opacity", 1)
-                .animate({"top": 0}, this.options.animationSpeed,
-                this.resetAndUnlock);
-            this.$slides
-                .eq(this.prevActiveSlide)
-                .css("opacity", 0);
-          }
-          if (slideDirection == "next") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({"top": -this.orbitHeight, "z-index": 3})
-                .css("opacity", 1)
-                .animate({"top": 0}, this.options.animationSpeed,
-                this.resetAndUnlock);
-          }
-          this.$slides
-              .eq(this.prevActiveSlide)
-              .css("opacity", 0);
-        }
-
-        //horizontal-push
-        if (this.options.animation == "horizontal-push") {
-          if (slideDirection == "next") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({"left": this.orbitWidth, "z-index": 3})
-                .animate({"left": 0, "opacity": 1}, this.options.animationSpeed,
-                this.resetAndUnlock);
-            this.$slides
-                .eq(this.prevActiveSlide)
-                .animate({"left": -this.orbitWidth},
-                this.options.animationSpeed, "", function () {
-                  $(this).css({"opacity": 0});
-                });
-          }
-          if (slideDirection == "prev") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({"left": -this.orbitWidth, "z-index": 3})
-                .animate({"left": 0, "opacity": 1}, this.options.animationSpeed,
-                this.resetAndUnlock);
-            this.$slides
-                .eq(this.prevActiveSlide)
-                .animate({"left": this.orbitWidth}, this.options.animationSpeed,
-                "", function () {
-                  $(this).css({"opacity": 0});
-                });
-          }
-        }
-
-        //vertical-push
-        if (this.options.animation == "vertical-push") {
-          if (slideDirection == "next") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({top: -this.orbitHeight, "z-index": 3})
-                .css("opacity", 1)
-                .animate({top: 0, "opacity": 1}, this.options.animationSpeed,
-                this.resetAndUnlock);
-            this.$slides
-                .eq(this.prevActiveSlide)
-                .css("opacity", 0)
-                .animate({top: this.orbitHeight}, this.options.animationSpeed,
-                "");
-          }
-          if (slideDirection == "prev") {
-            this.$slides
-                .eq(this.activeSlide)
-                .css({top: this.orbitHeight, "z-index": 3})
-                .css("opacity", 1)
-                .animate({top: 0}, this.options.animationSpeed,
-                this.resetAndUnlock);
-            this.$slides
-                .eq(this.prevActiveSlide)
-                .css("opacity", 0)
-                .animate({top: -this.orbitHeight}, this.options.animationSpeed);
-          }
-        }
-
-        this.setCaption();
-      }
-
-      // if on last slide and singleCycle is true, don't loop through slides again
-      // .length is zero based so must minus 1 to match activeSlide index
-      if (this.activeSlide === this.$slides.length - 1
-          && this.options.singleCycle) {
-        this.stopClock();
-      }
     }
   };
-
-  $.fn.orbit = function (options) {
-    return this.each(function () {
-      var orbit = $.extend({}, ORBIT);
-      orbit.init(this, options);
-    });
-  };
-
-})(jQuery);
-
-/*!
- * jQuery imageready Plugin
- * http://www.zurb.com/playground/
- *
- * Copyright 2011, ZURB
- * Released under the MIT License
- */
-(function ($) {
-
-  var options = {};
-
-  $.event.special.imageready = {
-
-    setup: function (data, namespaces, eventHandle) {
-      options = data || options;
-    },
-
-    add: function (handleObj) {
-      var $this = $(this),
-          src;
-
-      if (this.nodeType === 1 && this.tagName.toLowerCase() === 'img'
-          && this.src !== '') {
-        if (options.forceLoad) {
-          src = $this.attr('src');
-          $this.attr('src', '');
-          bindToLoad(this, handleObj.handler);
-          $this.attr('src', src);
-        } else if (this.complete || this.readyState === 4) {
-          handleObj.handler.apply(this, arguments);
-        } else {
-          bindToLoad(this, handleObj.handler);
-        }
-      }
-    },
-
-    teardown: function (namespaces) {
-      $(this).unbind('.imageready');
-    }
-  };
-
-  function bindToLoad(element, callback) {
-    var $this = $(element);
-
-    $this.bind('load.imageready', function () {
-      callback.apply(element, arguments);
-      $this.unbind('load.imageready');
-    });
-  }
-
-}(jQuery));
-
-/*
-
- Holder - 1.3 - client side image placeholders
- (c) 2012 Ivan Malopinsky / http://imsky.co
-
- Provided under the Apache 2.0 License: http://www.apache.org/licenses/LICENSE-2.0
- Commercial use requires attribution.
-
- */
-
-var Holder = Holder || {};
-(function (app, win) {
-
-  var preempted = false,
-      fallback = false,
-      canvas = document.createElement('canvas');
-
-//http://javascript.nwbox.com/ContentLoaded by Diego Perini with modifications
-  function contentLoaded(n, t) {
-    var l = "complete", s = "readystatechange", u = !1, h = u, c = !0, i = n.document, a = i.documentElement, e = i.addEventListener
-        ? "addEventListener" : "attachEvent", v = i.addEventListener
-        ? "removeEventListener" : "detachEvent", f = i.addEventListener ? ""
-        : "on", r = function (e) {
-      (e.type != s || i.readyState == l) && ((e.type == "load" ? n : i)[v](f
-          + e.type, r, u), !h && (h = !0) && t.call(n, null))
-    }, o = function () {
-      try {
-        a.doScroll("left")
-      } catch (n) {
-        setTimeout(o, 50);
-        return
-      }
-      r("poll")
-    };
-    if (i.readyState == l) {
-      t.call(n, "lazy");
-    } else {
-      if (i.createEventObject && a.doScroll) {
-        try {
-          c = !n.frameElement
-        } catch (y) {
-        }
-        c && o()
-      }
-      i[e](f + "DOMContentLoaded", r, u), i[e](f + s, r, u), n[e](f + "load", r,
-          u)
-    }
-  };
-
-//https://gist.github.com/991057 by Jed Schmidt with modifications
-  function selector(a) {
-    a = a.match(/^(\W)?(.*)/);
-    var b = document["getElement" + (a[1] ? a[1] == "#" ? "ById"
-        : "sByClassName" : "sByTagName")](a[2]);
-    var ret = [];
-    b != null && (b.length ? ret = b : b.length == 0 ? ret = b : ret = [b]);
-    return ret;
-  }
-
-//shallow object property extend
-  function extend(a, b) {
-    var c = {};
-    for (var d in a) {
-      c[d] = a[d];
-    }
-    for (var e in b) {
-      c[e] = b[e];
-    }
-    return c
-  }
-
-  function draw(ctx, dimensions, template) {
-    var dimension_arr = [dimensions.height, dimensions.width].sort();
-    var maxFactor = Math.round(dimension_arr[1] / 16),
-        minFactor = Math.round(dimension_arr[0] / 16);
-    var text_height = Math.max(template.size, maxFactor);
-    canvas.width = dimensions.width;
-    canvas.height = dimensions.height;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = template.background;
-    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
-    ctx.fillStyle = template.foreground;
-    ctx.font = "bold " + text_height + "px sans-serif";
-    var text = template.text ? template.text : (dimensions.width + "x"
-        + dimensions.height);
-    if (Math.round(ctx.measureText(text).width) / dimensions.width > 1) {
-      text_height = Math.max(minFactor, template.size);
-    }
-    ctx.font = "bold " + text_height + "px sans-serif";
-    ctx.fillText(text, (dimensions.width / 2), (dimensions.height / 2),
-        dimensions.width);
-    return canvas.toDataURL("image/png");
-  }
-
-  if (!canvas.getContext) {
-    fallback = true;
-  } else {
-    if (canvas.toDataURL("image/png").indexOf("data:image/png") < 0) {
-      //Android doesn't support data URI
-      fallback = true;
-    } else {
-      var ctx = canvas.getContext("2d");
-    }
-  }
-
-  var settings = {
-    domain: "holder.js",
-    images: "img",
-    themes: {
-      "gray": {
-        background: "#eee",
-        foreground: "#aaa",
-        size: 12
-      },
-      "social": {
-        background: "#3a5a97",
-        foreground: "#fff",
-        size: 12
-      },
-      "industrial": {
-        background: "#434A52",
-        foreground: "#C2F200",
-        size: 12
-      }
-    }
-  };
-
-
-  app.flags = {
-    dimensions: {
-      regex: /([0-9]+)x([0-9]+)/,
-      output: function (val) {
-        var exec = this.regex.exec(val);
-        return {
-          width: +exec[1],
-          height: +exec[2]
-        }
-      }
-    },
-    colors: {
-      regex: /#([0-9a-f]{3,})\:#([0-9a-f]{3,})/i,
-      output: function (val) {
-        var exec = this.regex.exec(val);
-        return {
-          size: settings.themes.gray.size,
-          foreground: "#" + exec[2],
-          background: "#" + exec[1]
-        }
-      }
-    },
-    text: {
-      regex: /text\:(.*)/,
-      output: function (val) {
-        return this.regex.exec(val)[1];
-      }
-    }
-  }
-
-  for (var flag in app.flags) {
-    app.flags[flag].match = function (val) {
-      return val.match(this.regex)
-    }
-  }
-
-  app.add_theme = function (name, theme) {
-    name != null && theme != null && (settings.themes[name] = theme);
-    return app;
-  };
-
-  app.add_image = function (src, el) {
-    var node = selector(el);
-    if (node.length) {
-      for (var i = 0, l = node.length; i < l; i++) {
-        var img = document.createElement("img")
-        img.setAttribute("data-src", src);
-        node[i].appendChild(img);
-      }
-    }
-    return app;
-  };
-
-  app.run = function (o) {
-    var options = extend(settings, o),
-        images = selector(options.images),
-        preempted = true;
-
-    for (var l = images.length, i = 0; i < l; i++) {
-      var theme = settings.themes.gray;
-      var src = images[i].getAttribute("data-src")
-          || images[i].getAttribute("src");
-      if (src && !!~src.indexOf(options.domain)) {
-        var render = false,
-            dimensions = null,
-            text = null;
-        var flags = src.substr(src.indexOf(options.domain)
-            + options.domain.length + 1).split("/");
-        for (sl = flags.length, j = 0; j < sl; j++) {
-          if (app.flags.dimensions.match(flags[j])) {
-            render = true;
-            dimensions = app.flags.dimensions.output(flags[j]);
-          } else if (app.flags.colors.match(flags[j])) {
-            theme = app.flags.colors.output(flags[j]);
-          } else if (options.themes[flags[j]]) {
-            //If a theme is specified, it will override custom colors
-            theme = options.themes[flags[j]];
-          } else if (app.flags.text.match(flags[j])) {
-            text = app.flags.text.output(flags[j]);
-          }
-        }
-        if (render) {
-          images[i].setAttribute("data-src", src);
-          var dimensions_caption = dimensions.width + "x" + dimensions.height;
-          images[i].setAttribute("alt",
-              text ? text : theme.text ? theme.text + " [" + dimensions_caption
-                  + "]" : dimensions_caption);
-
-          // Fallback
-          // images[i].style.width = dimensions.width + "px";
-          // images[i].style.height = dimensions.height + "px";
-          images[i].style.backgroundColor = theme.background;
-
-          var theme = (text ? extend(theme, {
-            text: text
-          }) : theme);
-
-          if (!fallback) {
-            images[i].setAttribute("src", draw(ctx, dimensions, theme));
-          }
-        }
-      }
-    }
-    return app;
-  };
-  contentLoaded(win, function () {
-    preempted || app.run()
-  })
-
-})(Holder, window);
+}(Foundation.zj, this, this.document));

@@ -1,4 +1,5 @@
-define([], function () {
+define([
+], function () {
 
 
   /* == Logger export ======================================================= */
@@ -18,4 +19,5 @@ define([], function () {
       console.log("[INFO] " + msg);
     }
   }
+
 });

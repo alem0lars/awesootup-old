@@ -1,0 +1,12 @@
+<p id="copyright-notice">
+  Copyright &copy <%= Time.now.strftime('%Y') %>
+  <%= $global_cfg.get(:author, :name) %>.
+  <span class="label">All rights reserved</span>
+</p>
+
+<p id="license">
+  All of the content is released under the
+  <a href="<%= $global_cfg.get(:license, :website) %>">
+    <span class="label"><%= $global_cfg.get(:license, :name) %></span> license
+  </a>
+</p>

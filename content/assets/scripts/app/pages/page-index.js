@@ -4,7 +4,7 @@ define([
 ], function ($, awesootups_manager, awesootup_widget) {
 
   function setup_standalone_widget() {
-    var standalone_tab_id = "awesootupbuilder-standaloneTab",
+    var standalone_tab_id = "awesootup-builder-standalone-content",
         start_id = "start-standalone-awesootup";
 
     var standalone_awesootup_widget = awesootup_widget
@@ -29,5 +29,10 @@ define([
     setup_standalone_widget();
     setup_popular_widgets();
   });
+
+
+  /* == PageIndex export ==================================================== */
+
+  return {};
 
 });

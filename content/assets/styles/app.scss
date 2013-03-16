@@ -1,3 +1,6 @@
+// Normalize defaults
+@import "lib/normalize";
+
 // Fonts
 @import "app/config/fonts/fonts_config";
 
@@ -16,6 +19,7 @@
 // Lib styles
 @import "lib/jquery-ui";
 @import "lib/tocify";
+@import "lib/highlight-theme";
 
 // Layout styles
 @import "app/main";

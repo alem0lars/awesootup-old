@@ -1,7 +1,17 @@
 @import "app/config/foundation_config";
 
 
+// The vertical gap between the header and #main-wrp
+// (e.g. 15px means that there are 15 pixels between the end of the header and
+//  the beginning of the #main-wrp div)
+$vert-gap-header: 15px;
+
+// The smallest possible height for the #main-wrp
+$main-min-height: 40em;
+
+
+/* #main-wrp holds all of the page contents */
 #main-wrp {
-  padding-top: $topBarHeight + 15px;
-  min-height: 40em;
+  padding-top: $topbar-height + $vert-gap-header;
+  min-height: $main-min-height;
 }
